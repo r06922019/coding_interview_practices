@@ -1,3 +1,10 @@
+/*
+You have a block with the dimensions 4 × n.
+Find the number of different ways you can fill
+this block with smaller blocks that have the
+dimensions 1 × 2. You are allowed to rotate
+the smaller blocks.
+*/
 int fillingBlocks(int n) {
     vector<int> A(n+1, 0); // ends in ****
     vector<int> B(n+1, 0); // ends in __**
