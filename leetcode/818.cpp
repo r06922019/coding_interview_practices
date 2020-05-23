@@ -10,15 +10,16 @@ public:
         speed = s;
     }
 
-    vector<State> gen_next_states(int target) {
+    vector<State> gen_next_states(const int &target) {
         vector<State> ret;
 
         int next_pos = pos + speed;
         int dis_from_next_pos_to_target = abs(next_pos - target);
-        int dis_from_beginning = abs(target - 0);
-        if(dis_from_next_pos_to_target < dis_from_beginning)  { // A
-            if(abs(speed) < (INT_MAX >> 1))
-                ret.push_back(State(pos+speed, 2*speed));
+        // int dis_from_beginning = abs(target - 0);
+        const int &dis_from_beginning = target;
+        if(next_pos > 0 && dis_from_next_pos_to_target <= dis_from_beginning)  { // A
+            if(abs(speed) <= target)
+                ret.push_back(State(next_pos, 2*speed));
         }
 
         if(speed > 0)
@@ -42,12 +43,12 @@ class StateHash {
 public:
     size_t operator()(const State &s) const {
         int pos = s.pos;
-        if(pos < 0) pos ^= -1;
+        // if(pos < 0) pos ^= -1;
 
         int speed = s.speed;
         if(speed < 0) speed ^= -1;
 
-        return pos ^ speed;
+        return (pos << 8) ^ speed;
     }
 };
 
