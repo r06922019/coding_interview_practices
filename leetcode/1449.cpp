@@ -1,6 +1,34 @@
 class Solution {
 public:
+    string largestNumber(vector<int>& costs, int target) {
+        vector<int> dp(target+1, -1); // length
+        dp[0] = 0;
+        for(int cur_cost = 0; cur_cost <= target; ++cur_cost) {
+            if(dp[cur_cost] == -1) continue;
+            for(int d = 1; d <= 9; ++d) {
+                int new_cost = cur_cost + costs[d-1];
+                int new_len = dp[cur_cost] + 1;
+                const int &old_len = dp[new_cost];
+                if(new_cost <= target && old_len < new_len) {
+                    dp[new_cost] = dp[cur_cost] + 1;
+                }
+            }
+        }
+        if(dp[target] == -1) return "0";
 
+        vector<char> ans;
+        for(int d = 9; d >= 1; --d) {
+            while((target - costs[d-1] >= 0) &&
+                  dp[target] == dp[target - costs[d-1]] + 1) { // exists && valid (lens differ by 1)
+                target -= costs[d-1];
+                ans.push_back('0' + d);
+            }
+        }
+        return string(ans.begin(), ans.end());
+    }
+
+    /*
+    // O(T^2)
     bool is_better(string &old_str, string &new_str) {
         if(old_str.empty()) return true;
         if(new_str.empty()) return false;
@@ -39,4 +67,5 @@ public:
         }
         return (dp[target].empty())? "0":dp[target];
     }
+    */
 };
