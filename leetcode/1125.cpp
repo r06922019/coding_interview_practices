@@ -14,20 +14,14 @@ public:
             skill_to_id[ req_skills[i] ] = i;
         }
 
-        vector<int> people_skills(people.size(), 0);
-        for(int i = 0; i < people.size(); ++i) {
-            people_skills[i] = convert_skill(skill_to_id, people[i]);
-        }
-
         int target_skills = (1 << req_skills.size()) - 1;
+        unordered_map<int, vector<int>> table; //table[skill_set] -> list of people
 
-        unordered_map<int, vector<int>> table;
-        //dp[skill_set] -> list of people
-        vector<int> keys;
+        vector<int> keys; // for updating
         table[0] = vector<int>();
 
         for(int i = 0; i < people.size(); ++i) {
-            int cur_person_skill = people_skills[i];
+            int cur_person_skill = convert_skill(skill_to_id, people[i]);
 
             keys.clear();
             for(auto &it:table)
