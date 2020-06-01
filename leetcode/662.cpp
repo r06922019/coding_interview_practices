@@ -12,15 +12,16 @@
 class Solution {
 public:
 
-    bool non_leaf(TreeNode *root) {
-        return root->left || root->right;
+    bool skewed(TreeNode *root) {
+        return (root->left != nullptr && root->right == nullptr) ||
+            (root->left == nullptr && root->right != nullptr);
     }
 
     int widthOfBinaryTree(TreeNode* root) {
         if(root == nullptr) return 0;
 
         // pruning on root
-        while(non_leaf(root) && (root->left == nullptr || root->right == nullptr)) {
+        while(skewed(root)) {
             if(root->left) root = root->left;
             else root = root->right;
         }
