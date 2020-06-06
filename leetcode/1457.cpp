@@ -12,26 +12,19 @@
 class Solution {
 public:
     int pseudoPalindromicPaths (TreeNode* root) {
-        vector<int> counts(9+1, 0);
         int ans = 0;
-        helper(root, counts, ans);
+        helper(root, 0, ans);
         return ans;
     }
 
-    void helper(TreeNode *root, vector<int> &counts, int &ans) {
+    void helper(TreeNode *root, int counts, int &ans) {
         if(root == nullptr) return ;
 
-        ++counts[root->val];
+        counts ^= (1 << root->val);
 
         // is_leaf
         if(root->left == nullptr && root->right == nullptr) {
-            int odd = 0;
-            for(int &c : counts) {
-                if(c % 2 == 1) {
-                    ++odd;
-                }
-            }
-            if(odd <= 1) {
+            if((counts & (counts - 1)) == 0) {
                 ++ans;
             }
         }
@@ -40,8 +33,40 @@ public:
                 helper(p, counts, ans);
             }
         }
-
-        --counts[root->val];
         return ;
     }
+
+//     int pseudoPalindromicPaths (TreeNode* root) {
+//         vector<int> counts(9+1, 0);
+//         int ans = 0;
+//         helper(root, counts, ans);
+//         return ans;
+//     }
+
+//     void helper(TreeNode *root, vector<int> &counts, int &ans) {
+//         if(root == nullptr) return ;
+
+//         ++counts[root->val];
+
+//         // is_leaf
+//         if(root->left == nullptr && root->right == nullptr) {
+//             int odd = 0;
+//             for(int &c : counts) {
+//                 if(c % 2 == 1) {
+//                     ++odd;
+//                 }
+//             }
+//             if(odd <= 1) {
+//                 ++ans;
+//             }
+//         }
+//         else {
+//             for(auto &p : {root->left, root->right}) {
+//                 helper(p, counts, ans);
+//             }
+//         }
+
+//         --counts[root->val];
+//         return ;
+//     }
 };
