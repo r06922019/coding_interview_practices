@@ -1,22 +1,23 @@
 class Solution {
 public:
     int trap(vector<int>& heights) {
-        if(heights.size() < 3) {
-            return 0;
+        // find left right max
+        int cur_max = 0, n = heights.size();
+        vector<int> left, right(n, 0);
+        for(int &h : heights) {
+            left.push_back(cur_max);
+            cur_max = max(cur_max, h);
         }
 
-        int ans = 0, n = heights.size();
-        vector<int> left_max = heights, right_max = heights;
-        for(int i = 1; i < n; ++i) {
-            left_max[i] = max(left_max[i], left_max[i-1]);
+        cur_max = 0;
+        for(int i = n-1; i>= 0; --i) {
+            right[i] = cur_max;
+            cur_max = max(cur_max, heights[i]);
         }
 
-        for(int i = n-1-1; i >= 0; --i) {
-            right_max[i] = max(right_max[i], right_max[i+1]);
-        }
-
-        for(int i = 1; i < n-1; ++i) {
-            ans += min(left_max[i], right_max[i]) - heights[i];
+        int ans = 0;
+        for(int i = 0; i < n; ++i) {
+            ans += max(0, min(left[i], right[i]) - heights[i]);
         }
         return ans;
     }
