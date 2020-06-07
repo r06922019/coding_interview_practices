@@ -1,74 +1,97 @@
-class Solution {
+class Pos {
 public:
-    void enqueue_border(priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>> &pq, vector<vector<int>> &heightMap, vector<vector<bool>> &visited) {
-        int m = heightMap.size(), n = heightMap[0].size();
-
-        for(int i = 0; i < m; ++i) {
-            if(i == 0 || i == m-1) {
-                for(int j = 0; j < n; ++j) {
-                    pq.push({heightMap[i][j], i, j});
-                    visited[i][j] = true;
-                }
-            }
-            else {
-                int j = 0;
-                pq.push({heightMap[i][j], i, j});
-                visited[i][j] = true;
-                j = n-1;
-                pq.push({heightMap[i][j], i, j});
-                visited[i][j] = true;
-            }
-        }
-        return ;
+    int i, j, val;
+    Pos() {
+        i = j = val = -1;
     }
 
-    void enqueue_if_valid(priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>> &pq, vector<vector<int>> &heightMap, int i, int j, vector<vector<bool>> &visited) {
-        const int &m = heightMap.size(), &n = heightMap[0].size();
-        if(i < 0 || i >= m || j < 0 || j >= n || visited[i][j]) {
-            return ;
-        }
-        pq.push({heightMap[i][j], i, j});
-        visited[i][j] = true;
-        return ;
+    Pos(int _i, int _j, int _v) {
+        i = _i;
+        j = _j;
+        val = _v;
     }
 
-    int trapRainWater(vector<vector<int>>& heightMap) {
-        if(heightMap.size() < 3 || heightMap[0].size() < 3) {
-            return 0;
-        }
-        const int &m = heightMap.size(), &n = heightMap[0].size();
-        vector<vector<bool>> visited(m, vector<bool>(n, false));
-        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>> pq; // h, i, j
-
-        enqueue_border(pq, heightMap, visited);
-
-        int ans = 0, cur_min = pq.top()[0];
-        while(pq.size()) {
-            vector<int> cur = pq.top();
-            int &cur_h = cur[0], &i = cur[1], &j = cur[2];
-            pq.pop();
-
-            // update cur_min
-            if(cur_h < cur_min) {
-                ans += cur_min - cur_h;
-            }
-            else {
-                cur_min = cur_h;
-            }
-
-            // span children
-            enqueue_if_valid(pq, heightMap, i-1, j, visited);
-            enqueue_if_valid(pq, heightMap, i, j-1, visited);
-            enqueue_if_valid(pq, heightMap, i+1, j, visited);
-            enqueue_if_valid(pq, heightMap, i, j+1, visited);
-        }
-        return ans;
+    bool operator==(const Pos &other) const {
+        return i == other.i && j == other.j;
     }
 
+    bool operator!=(const Pos &other) const {
+        return !(*this == other);
+    }
+
+    void add_vec(vector<int> &v) {
+        assert(v.size() == 2);
+        i += v[0];
+        j += v[1];
+    }
+
+    void minus_vec(vector<int> &v) {
+        assert(v.size() == 2);
+        i -= v[0];
+        j -= v[1];
+    }
+
+    bool is_valid(vector<vector<int>>& heightMap) {
+        return i >= 0 && i < heightMap.size() && j >= 0 && j < heightMap[i].size();
+    }
+
+    vector<Pos> get_neighbors(vector<vector<int>>& heightMap) {
+        static vector<vector<int>> dir4 = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        vector<Pos> ret;
+        for(auto &dir : dir4) {
+            this->add_vec(dir);
+            if(this->is_valid(heightMap)) {
+                ret.emplace_back(i, j, heightMap[i][j]);
+            }
+            this->minus_vec(dir);
+        }
+        return ret;
+    }
 };
 
+class PosHash {
+public:
+    size_t operator()(const Pos &p) const {
+        return (p.i << 8) ^ p.j;
+    }
+};
 
+class Solution {
+public:
+    int trapRainWater(vector<vector<int>>& heightMap) {
+        if(heightMap.empty() || heightMap[0].empty()) return 0;
 
+        int m = heightMap.size(), n = heightMap[0].size();
+        if(m == 1 || n == 1) return 0;
 
+        auto comp = []( Pos &a, Pos &b ) { return a.val > b.val; }; // min_queue
+        priority_queue<Pos, vector<Pos>, decltype(comp)> pq(comp);
+        unordered_set<Pos, PosHash> visited;
 
+        for(int i = 0; i < m; ++i) {
+            for(int j = 0; j < n; ++j) {
+                if(i == 0 || j == 0 || i == m-1 || j == n-1) {
+                    Pos p(i, j, heightMap[i][j]);
+                    visited.insert(p);
+                    pq.push(p);
+                }
+            }
+        }
 
+        int ans = 0, cur_wall_height = 0;
+        while(pq.size()) {
+            Pos cur = pq.top();
+            pq.pop();
+            cur_wall_height = max(cur_wall_height, cur.val);
+            ans += (cur_wall_height - cur.val);
+            for(auto &p : cur.get_neighbors(heightMap)) {
+                if(visited.find(p) == visited.end()) {
+                    visited.insert(p);
+                    pq.push(p);
+                }
+            }
+        }
+
+        return ans;
+    }
+};
