@@ -1,134 +1,137 @@
 class State {
 public:
     string board, hand;
-    State(string _b, string _h) {
-        board = _b;
-        hand = _h;
+    State () {
+        board = hand = "";
     }
 
-    string gen_key() {
-        return board + " " + hand;
+    State (string &b, string &h) {
+        board = b;
+        hand = h;
     }
 
-    bool ends() {
+    bool end() {
         return board.empty();
+    }
+
+    bool solvable() {
+        // reduce_hand
+        vector<int> hand_counter(26, 0);
+        for(char &c : hand) {
+            ++hand_counter[c-'A'];
+        }
+
+        vector<int> board_counter(26, 0);
+        for(char &c : board) {
+            ++board_counter[c-'A'];
+        }
+
+        for(int i = 0; i < 26; ++i) {
+            if(board_counter[i] > 0) {
+                if((board_counter[i] + hand_counter[i] < 3)) {
+                    return false;
+                }
+            }
+            else {
+                hand_counter[i] = 0;
+            }
+        }
+
+        hand = "";
+        for(int i = 0; i < 26; ++i) {
+            for(int j = 0; j < hand_counter[i]; ++j) {
+                hand += ('A' + i);
+            }
+        }
+        return true;
     }
 
     void reduce_board() {
         bool modified = true;
-        string result = "";
         while(modified) {
             modified = false;
-            int index = 0;
-            while(index < board.size()) {
+            int index = 0, n = board.size();
+            string new_board = "";
+            while(index < n) {
                 int count = 0;
-                char &cur = board[index];
-                while(board[index] == cur) {
+                char &cur_ball = board[index];
+                while(index < n && board[index] == cur_ball) {
                     ++index;
                     ++count;
                 }
-
                 if(count >= 3) {
                     modified = true;
                 }
                 else {
                     while(count--) {
-                        result += cur;
+                        new_board += cur_ball;
                     }
                 }
             }
-            board = result;
-            result = "";
+            board = new_board;
         }
-        return ;
-    }
-
-    void add_ball(char ball, int index) {
-        string new_board = (index > 0)? board.substr(0, index) : "";
-        new_board += ball;
-        new_board += (index < board.size())? board.substr(index) : "";
-        board = new_board;
-        reduce_board();
-        return ;
     }
 
     vector<State> get_next_states() {
-        vector<State> next_states;
+        vector<State> ret;
         for(int i = 0; i < hand.size(); ++i) {
-            if(i > 0 && hand[i] == hand[i-1]) continue;
-            string new_hand = hand;
-            new_hand.erase(i, 1);
-            for(int j = 0; j <= board.size(); ++j) {
-                State next_state(board, new_hand);
-                next_state.add_ball(hand[i], j);
-                next_states.push_back(next_state);
+            if(i == 0 || hand[i] != hand[i-1]) {
+                for(int len = 0; len <= board.size(); ++len) {
+                    string new_board = board.substr(0, len) + hand[i] + board.substr(len);
+                    string new_hand = hand.substr(0, i) + hand.substr(i+1);
+                    State new_state(new_board, new_hand);
+                    new_state.reduce_board();
+                    if(new_state.solvable()) {
+                        ret.push_back(new_state);
+                    }
+                }
             }
         }
-        return next_states;
+        return ret;
+    }
+
+    bool operator==(const State &other) const {
+        return board == other.board && hand == other.hand;
+    }
+
+};
+
+class StateHash {
+public:
+    static hash<string> hasher;
+    size_t operator()(const State &s) const {
+        return hasher(s.board) ^ hasher(s.hand);
     }
 };
+hash<string> StateHash::hasher = hash<string>();
+
+typedef unordered_set<State, StateHash> STATE_SET;
 
 class Solution {
 public:
-
-    bool test_if_possible(string &board, string &hand) {
-        unordered_map<char, int> board_count, hand_count;
-        for(char &c : board) ++board_count[c];
-        for(char &c : hand) ++hand_count[c];
-
-        // definitely impossible
-        for(auto &it : board_count) {
-            char cur_char = it.first;
-            int cur_count = it.second;
-            if(hand_count.find(cur_char) != hand_count.end())
-                cur_count += hand_count[cur_char];
-            if(cur_count < 3) return false;
-        }
-
-        // shrink hand
-        for(auto &it : hand_count) {
-            char cur_char = it.first;
-            if(board_count.find(cur_char) == board_count.end())
-                it.second = 0; // remove useless ball;
-        }
-
-        // recover hand
-        hand = "";
-        for(auto &it : hand_count) {
-            for(int i = 0; i < it.second; ++i)
-                hand += it.first;
-        }
-
-        sort(hand.begin(), hand.end());
-        return true;
-    }
-
     int findMinStep(string board, string hand) {
-        bool possible = test_if_possible(board, hand);
-        if(!possible) return -1;
+        State start(board, hand);
+        STATE_SET visited;
+        queue<State> q;
+
+        if(start.solvable()) {
+            q.push(start);
+            visited.insert(start);
+        }
 
         int moves = 0;
-        State init(board, hand);
-
-        queue<State> q;
-        q.push(init);
-
-        unordered_set<string> visited;
-        visited.insert(init.gen_key());
-
         while(q.size()) {
-            for(int q_i = 0, q_n = q.size(); q_i < q_n; ++q_i) {
+            int q_n = q.size();
+            while(q_n--) {
                 State cur = q.front();
                 q.pop();
-
-                if(cur.ends()) return moves;
-
-                vector<State> next_states = cur.get_next_states();
-                for(State &n_s : next_states) {
-                    string n_key = n_s.gen_key();
-                    if(visited.find(n_key) == visited.end()) {
-                        visited.insert(n_key);
-                        q.push(n_s);
+                if(cur.end()) {
+                    return moves;
+                }
+                for(auto &next_state : cur.get_next_states()) {
+                    if(visited.find(next_state) == visited.end()) {
+                        visited.insert(next_state);
+                        q.push(next_state);
                     }
                 }
             }
