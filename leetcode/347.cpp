@@ -1,3 +1,31 @@
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int, int> counter;
+        for(int &num : nums) {
+            ++counter[num];
+        }
+
+        unordered_map<int, vector<int>> count_of_numbers;
+        for(auto &it : counter) {
+            int num = it.first, count = it.second;
+            count_of_numbers[count].push_back(num);
+        }
+
+        vector<int> ans;
+        for(int count = nums.size(); count >= 1 && ans.size() < k; --count) {
+            if(count_of_numbers.find(count) != count_of_numbers.end()) {
+                for(int &num : count_of_numbers[count]) {
+                    ans.push_back(num);
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+/*
+
 class Item {
 public:
     int num, count;
@@ -38,3 +66,5 @@ public:
         return ans;
     }
 };
+
+*/
