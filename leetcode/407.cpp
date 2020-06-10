@@ -68,6 +68,15 @@ public:
         priority_queue<Pos, vector<Pos>, decltype(comp)> pq(comp);
         unordered_set<Pos, PosHash> visited;
 
+        // hash<int> int_hasher;
+        // function<size_t (const Pos)> pos_hash_func = [&int_hasher](const Pos &p) {
+        //     return (int_hasher(p.i) << 4) ^ int_hasher(p.j);
+        // };
+        // function<bool (const Pos, const Pos)> pos_equal_func = [](const Pos &a, const Pos &b) {
+        //     return a == b;
+        // };
+        // unordered_set<Pos, decltype(pos_hash_func), decltype(pos_equal_func)> visited(256, pos_hash_func, pos_equal_func);
+
         for(int i = 0; i < m; ++i) {
             for(int j = 0; j < n; ++j) {
                 if(i == 0 || j == 0 || i == m-1 || j == n-1) {
