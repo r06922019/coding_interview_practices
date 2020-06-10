@@ -24,6 +24,21 @@ public:
 
 class Solution {
 public:
+    unordered_map<int, Node *> id_to_new_nodes;
+    Node* cloneGraph(Node* node) {
+        if(node == nullptr) return nullptr;
+        int node_id = node->val;
+        if(id_to_new_nodes.find(node_id) != id_to_new_nodes.end())
+            return id_to_new_nodes[node_id];
+
+        Node *new_node = new Node(node_id);
+        id_to_new_nodes[node_id] = new_node;
+        for(auto &neigh : node->neighbors) {
+            new_node->neighbors.push_back(cloneGraph(neigh));
+        }
+        return new_node;
+    }
+    /*
     Node* cloneGraph(Node* node) {
         if(node == nullptr) return nullptr;
         Node *start = new Node(node->val);
@@ -63,4 +78,5 @@ public:
         }
         return start;
     }
+    */
 };
