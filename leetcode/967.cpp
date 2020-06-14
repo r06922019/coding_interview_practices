@@ -1,35 +1,28 @@
 class Solution {
 public:
-    vector<int> numsSameConsecDiff(int N, int K) {
-        vector<string> str_ans = solve(N, K);
-        vector<int> ans;
-        for(string &s : str_ans) {
-            reverse(s.begin(), s.end());
-            if(s.size() && (N == 1 || (N > 1 && s[0] != '0')))
-            ans.push_back(stoi(s));
+
+    void append_digit(vector<int> &vec, int num, int diff) {
+        int digit = num % 10;
+        int new_digit = digit + diff;
+        if(new_digit >= 0 && new_digit <= 9) {
+            vec.push_back(num * 10 + new_digit);
         }
-        return ans;
     }
 
-    vector<string> solve(int N, int K) {
-        if(N == 1) {
-            vector<string> ret;
-            for(int i = 0; i <= 9; ++i)
-                ret.push_back(to_string(i));
-            return ret;
-        }
-
-        // first solve N-1, K
-        vector<string> ans;
-        for(string &sub_ans : solve(N-1, K)) {
-            int last_digit = sub_ans.back() - '0';
-            vector<int> possibilities = {last_digit-K};
-            if(K > 0) possibilities.push_back(last_digit+K);
-            for(int new_digit : possibilities) {
-                if(new_digit >= 0 && new_digit <= 9) {
-                    ans.push_back(sub_ans + to_string(new_digit));
+    vector<int> numsSameConsecDiff(int N, int K) {
+        vector<int> ans = {0,1,2,3,4,5,6,7,8,9};
+        --N;
+        while(N > 0) {
+            vector<int> new_ans;
+            for(int &num : ans) {
+                if(num > 0) {
+                    append_digit(new_ans, num, K);
+                    if(K > 0)
+                        append_digit(new_ans, num, -K);
                 }
             }
+            ans = new_ans;
+            --N;
         }
         return ans;
     }
