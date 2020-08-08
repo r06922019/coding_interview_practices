@@ -16,12 +16,12 @@
 [DP Problem Classifications - Helpful Notes](https://leetcode.com/problems/longest-palindromic-subsequence/discuss/222605/DP-Problem-Classifications-Helpful-Notes)
 
 #### Problem Set - LCS (in order)
-https://leetcode.com/problems/longest-common-subsequence/
-https://leetcode.com/problems/uncrossed-lines/
-https://leetcode.com/problems/regular-expression-matching/
-https://leetcode.com/problems/wildcard-matching/
-https://leetcode.com/problems/edit-distance/
-https://leetcode.com/problems/shortest-common-supersequence/
+[Leetcode - Longest Common Subsequence](https://leetcode.com/problems/longest-common-subsequence/)
+[Leetcode - Uncrossed Lines](https://leetcode.com/problems/uncrossed-lines/)
+[Leetcode - Regular Expression Matching](https://leetcode.com/problems/regular-expression-matching/)
+[Leetcode - Wildcard Matching](https://leetcode.com/problems/wildcard-matching/)
+[Leetcode - Edit Distance](https://leetcode.com/problems/edit-distance/)
+[Leetcode - Shortest Common Supersequence](https://leetcode.com/problems/shortest-common-supersequence/)
 
 ### Two Pointers
 [General summary of what kind of problem can/ cannot solved by Two Pointers](https://leetcode.com/problems/subarray-sum-equals-k/discuss/301242/General-summary-of-what-kind-of-problem-can-cannot-solved-by-Two-Pointers)
