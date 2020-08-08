@@ -1,13 +1,14 @@
 # Notes
 
 ## Websites for practice
-[The HackerRank Interview Preparation Kit](https://www.hackerrank.com/interview/interview-preparation-kit)
-[Codesignal Interview Practice Crash Course](https://www.hackerrank.com/interview/interview-preparation-kit)
+* [The HackerRank Interview Preparation Kit](https://www.hackerrank.com/interview/interview-preparation-kit)
+* [Codesignal Interview Practice Crash Course](https://www.hackerrank.com/interview/interview-preparation-kit)
+* [Leetcode](https://leetcode.com/problemset/top-interview-questions/)
 
 ## Algo & DS
 
 ### Binary Search
-🔥Binary Search 101🔥 - The Ultimate Binary Search Handbook ([leetcode article](https://leetcode.com/problems/binary-search/discuss/423162/Binary-Search-101-The-Ultimate-Binary-Search-Handbook))
+* 🔥Binary Search 101🔥 - The Ultimate Binary Search Handbook ([leetcode article](https://leetcode.com/problems/binary-search/discuss/423162/Binary-Search-101-The-Ultimate-Binary-Search-Handbook))
 
 ### Dynamic Programming
 
