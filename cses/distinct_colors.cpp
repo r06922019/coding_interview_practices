@@ -8,24 +8,24 @@ using namespace std;
 const int MAX = 2*1e5;
 int ans[MAX] = {0};
 int colors[MAX] = {0};
-vector<int> child_list[MAX];
+unordered_set<int> child_list[MAX];
 
 unordered_set<int> *update_ans(int cur, int parent) {
-    vector<int> &cur_list = child_list[cur];
+    unordered_set<int> &cur_list = child_list[cur];
+    cur_list.erase(parent);
     if(cur_list.size()) {
         int n = cur_list.size();
-        vector<unordered_set<int> *> tmp_color_sets(n, nullptr);
-        int max_index = -1;
-        for(int i = 0; i < n; ++i) {
-            if(cur_list[i] != parent)
-                tmp_color_sets[i] = update_ans(cur_list[i], cur);
+        vector<unordered_set<int> *> tmp_color_sets;
+        int max_index = 0;
+        for(auto &child : cur_list) {
+            tmp_color_sets.push_back(update_ans(child, cur));
         }
-        for(int i = 0; i < n; ++i)
-            if(cur_list[i] != parent && (max_index == -1 || tmp_color_sets[i]->size() > tmp_color_sets[max_index]->size()))
+        for(int i = 1; i < n; ++i)
+            if(tmp_color_sets[i]->size() > tmp_color_sets[max_index]->size())
                 max_index = i;
         unordered_set<int> *max_size_set = tmp_color_sets[max_index];
         for(int i = 0; i < n; ++i) {
-            if(i != max_index && cur_list[i] != parent) {
+            if(i != max_index) {
                 for(auto &c : *tmp_color_sets[i]) {
                     max_size_set->insert(c);
                 }
@@ -54,8 +54,8 @@ int main(void) {
         int a,b;
         scanf("%d%d", &a, &b);
         --a; --b;
-        child_list[a].push_back(b);
-        child_list[b].push_back(a);
+        child_list[a].insert(b);
+        child_list[b].insert(a);
     }
 
     // update ans
