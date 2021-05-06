@@ -8,37 +8,24 @@ using namespace std;
 const int MAX = 2*1e5;
 int ans[MAX] = {0};
 int colors[MAX] = {0};
-unordered_set<int> child_list[MAX];
-
-void traverse_tree(int cur) {
-    unordered_set<int> &cur_list = child_list[cur];
-    if(cur_list.size()) {
-        for(auto &child : cur_list) {
-            child_list[child].erase(cur);
-        }
-        for(auto &child : cur_list) {
-            traverse_tree(child);
-        }
-    }
-
-}
+vector<int> child_list[MAX];
 
 unordered_set<int> *update_ans(int cur, int parent) {
-    unordered_set<int> &cur_list = child_list[cur];
-    cur_list.erase(parent);
+    vector<int> &cur_list = child_list[cur];
     if(cur_list.size()) {
         int n = cur_list.size();
-        vector<unordered_set<int> *> tmp_color_sets;
-        int max_index = 0;
-        for(auto &child : cur_list) {
-            tmp_color_sets.push_back(update_ans(child, cur));
+        vector<unordered_set<int> *> tmp_color_sets(n, nullptr);
+        int max_index = -1;
+        for(int i = 0; i < n; ++i) {
+            if(cur_list[i] != parent)
+                tmp_color_sets[i] = update_ans(cur_list[i], cur);
         }
-        for(int i = 1; i < n; ++i)
-            if(tmp_color_sets[i]->size() > tmp_color_sets[max_index]->size())
+        for(int i = 0; i < n; ++i)
+            if(cur_list[i] != parent && (max_index == -1 || tmp_color_sets[i]->size() > tmp_color_sets[max_index]->size()))
                 max_index = i;
         unordered_set<int> *max_size_set = tmp_color_sets[max_index];
         for(int i = 0; i < n; ++i) {
-            if(i != max_index) {
+            if(i != max_index && cur_list[i] != parent) {
                 for(auto &c : *tmp_color_sets[i]) {
                     max_size_set->insert(c);
                 }
@@ -67,16 +54,12 @@ int main(void) {
         int a,b;
         scanf("%d%d", &a, &b);
         --a; --b;
-        child_list[a].insert(b);
-        child_list[b].insert(a);
+        child_list[a].push_back(b);
+        child_list[b].push_back(a);
     }
 
-    // traverse tree to get edge direction
-    // traverse_tree(0);
-
     // update ans
-    unordered_set<int> *tmp = update_ans(0, 0);
-    delete tmp;
+    delete update_ans(0, 0);
 
     // output
     printf("%d", ans[0]);
