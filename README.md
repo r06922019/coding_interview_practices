@@ -10,6 +10,11 @@
 ### Binary Search
 * 🔥Binary Search 101🔥 - The Ultimate Binary Search Handbook ([leetcode article](https://leetcode.com/problems/binary-search/discuss/423162/Binary-Search-101-The-Ultimate-Binary-Search-Handbook))
 
+### Sorting
+
+#### quick sort
+https://alrightchiu.github.io/SecondRound/comparison-sort-quick-sortkuai-su-pai-xu-fa.html
+
 ### Dynamic Programming
 
 #### Articles
