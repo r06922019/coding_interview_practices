@@ -17,12 +17,12 @@ public:
         return ans;
     }
 
-    int helper(TreeNode* root, int &ans) {
+    int helper(TreeNode *root, int &ans) {
+        // returns how can this subtree add to its parent
         if(root == nullptr) return 0;
-        int left = helper(root->left, ans);
-        int right = helper(root->right, ans);
-        ans = max(ans, left + root->val + right);
-        return max(0, max(left, right) + root->val);
+        int left = max(helper(root->left, ans), 0);
+        int right = max(helper(root->right, ans), 0);
+        ans = max(ans, root->val + left + right);
+        return max(root->val + left, root->val + right);
     }
-
 };
