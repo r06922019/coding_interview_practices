@@ -32,6 +32,16 @@ https://alrightchiu.github.io/SecondRound/comparison-sort-quick-sortkuai-su-pai-
 ### Two Pointers
 * [General summary of what kind of problem can/ cannot solved by Two Pointers](https://leetcode.com/problems/subarray-sum-equals-k/discuss/301242/General-summary-of-what-kind-of-problem-can-cannot-solved-by-Two-Pointers)
 
+### Graph
+
+#### in degree
+See https://leetcode.com/submissions/detail/316466727/
+
+#### DFS
+
+##### 3-color
+See https://leetcode.com/submissions/detail/503963435/
+
 ## OS
 * [[系列文目錄] 作業系統 Operating System Concepts](https://mropengate.blogspot.com/2017/09/operating-system-concepts.html)（感謝柏文分享）
 
