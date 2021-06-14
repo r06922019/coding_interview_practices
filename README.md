@@ -3,9 +3,12 @@
 ## Websites for practice
 * [The HackerRank Interview Preparation Kit](https://www.hackerrank.com/interview/interview-preparation-kit)
 * [Codesignal Interview Practice Crash Course](https://www.hackerrank.com/interview/interview-preparation-kit)
-* [Leetcode](https://leetcode.com/problemset/top-interview-questions/)
+* [Leetcode](https://leetcode.com/problemset/top-interview-questions/) https://leetcode.com/assessment/
 
 ## Algo & DS
+
+### Prefix sum
+https://leetcode.com/discuss/general-discussion/563022/prefix-sum-problems
 
 ### Binary Search
 * 🔥Binary Search 101🔥 - The Ultimate Binary Search Handbook ([leetcode article](https://leetcode.com/problems/binary-search/discuss/423162/Binary-Search-101-The-Ultimate-Binary-Search-Handbook))
