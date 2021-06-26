@@ -10,7 +10,7 @@ dp hard ones?
 
 top interview
 
-fenwick tree
+fenwick tree (Binary Indexed Tree)
 
 binary search
 
@@ -25,3 +25,7 @@ topological sort
 
 列出 complexity -> algo 的表
 用 nlogn來想到 merge sort
+
+healthy body + exercise
+
+The key is redoing
