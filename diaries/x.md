@@ -1,4 +1,4 @@
-## X+1
+## X
 
 ### 06/08
 https://leetcode.com/problems/number-of-good-pairs/
@@ -11,6 +11,8 @@ https://leetcode.com/problems/maximum-number-of-non-overlapping-substrings/
 https://leetcode.com/problems/create-maximum-number/
 https://leetcode.com/problems/determine-if-two-strings-are-close/
 
+310.
+https://leetcode.com/problems/minimum-height-trees/
 
 ### 1 more mock
 https://leetcode.com/assessment/

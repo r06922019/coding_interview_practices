@@ -1,48 +1,59 @@
-class Solution {
+class Item {
 public:
-    vector<int> countSmaller(vector<int>& nums) {
-        int n = nums.size();
-        vector<int> smaller(n, 0);
-
-        vector<vector<int>> to_sort;
-        for(int i = 0; i < nums.size(); ++i) {
-            to_sort.push_back({nums[i], i});
-        }
-
-        merge_sort(to_sort, 0, n, smaller);
-        return smaller;
+    int index, value;
+    Item(int _i, int _v) {
+        index = _i;
+        value = _v;
     }
 
-    void merge_sort(vector<vector<int>> &to_sort, int start, int end, vector<int> &smaller) {
-        if((end-start) <= 1) {
-            return ;
-        }
+    Item(Item &&item) {
+        index = move(item.index);
+        value = move(item.value);
+    }
 
-        int mid = start + (end-start)/2;
-        merge_sort(to_sort, start, mid, smaller);
-        merge_sort(to_sort, mid, end, smaller);
-
-        // merge [start, mid) [mid, end)
-        vector<vector<int>> merged;
-        int i = start, j = mid;
-        while(i < mid || j < end) {
-            if(j == end || (i < mid && to_sort[i][0] <= to_sort[j][0])) {
-                // get from left part
-                smaller[to_sort[i][1]] += j - mid;
-                merged.push_back(to_sort[i]);
-                ++i;
-            }
-            else { // get from right part
-                merged.push_back(to_sort[j]);
-                ++j;
-            }
-        }
-
-        // move
-        for(int i = 0; i < merged.size(); ++i) {
-            to_sort[start+i] = merged[i];
-        }
-        return ;
+    Item& operator=(Item&& other) {
+        index = move(other.index);
+        value = move(other.value);
+        return *this;
     }
 };
 
+class Solution {
+public:
+    void merge_sort(vector<Item> &items, int start, int end, vector<int> &ans) {
+        if(end - start <= 1) return;
+
+        int mid = start + ((end-start) >> 1);
+        merge_sort(items, start, mid, ans);
+        merge_sort(items, mid, end, ans);
+
+        vector<Item> tmp;
+        tmp.reserve(end-start);
+        int l = start, r = mid;
+        while(l < mid || r < end) {
+            if(r >= end || (l < mid && items[l].value <= items[r].value)) {
+                ans[items[l].index] += r - mid;
+                tmp.push_back(move(items[l]));
+                ++l;
+            }
+            else {
+                tmp.push_back(move(items[r]));
+                ++r;
+            }
+        }
+        for(int i = start; i < end; ++i) {
+            items[i] = move(tmp[i-start]);
+        }
+        return;
+    }
+
+    vector<int> countSmaller(vector<int>& nums) {
+        vector<Item> items;
+        for(int i = 0; i < nums.size(); ++i) {
+            items.emplace_back(i, nums[i]);
+        }
+        vector<int> ans(nums.size(), 0);
+        merge_sort(items, 0, items.size(), ans);
+        return ans;
+    }
+};
