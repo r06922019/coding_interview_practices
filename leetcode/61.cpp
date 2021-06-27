@@ -10,7 +10,6 @@
  */
 class Solution {
 public:
-
     int get_size(ListNode *head) {
         int s = 0;
         while(head) {
