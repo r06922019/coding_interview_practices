@@ -9,31 +9,20 @@
 class Solution {
 public:
     ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
-        bool curA_restarted = false, curB_restarted = false;
+        if(headA == nullptr || headB == nullptr) return nullptr;
         ListNode *curA = headA, *curB = headB;
-        while(curA || curB) {
+        while(curA != curB) {
             if(curA == nullptr) {
-                if(!curA_restarted) {
-                    curA_restarted = true;
-                    curA = headB;
-                }
-                else {
-                    break;
-                }
+                curA = headB;
             }
-            if(curB == nullptr) {
-                if(!curB_restarted) {
-                    curB_restarted = true;
-                    curB = headA;
-                }
-                else {
-                    break;
-                }
+            else if(curB == nullptr) {
+                curB = headA;
             }
-            if(curA == curB) return curA;
-            curA = curA->next;
-            curB = curB->next;
+            else {
+                curA = curA->next;
+                curB = curB->next;
+            }
         }
-        return nullptr;
+        return curA;
     }
 };
