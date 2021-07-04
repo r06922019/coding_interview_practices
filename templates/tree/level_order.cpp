@@ -14,7 +14,7 @@ public:
     vector<vector<int>> levelOrder(TreeNode* root) {
         vector<vector<int>> ans;
         queue<TreeNode *> q;
-        q.push(root);
+        if(root) q.push(root);
         while(q.size()) {
             int n = q.size();
             vector<int> cur_vec;
