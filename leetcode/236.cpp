@@ -9,31 +9,24 @@
  */
 class Solution {
 public:
-    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        TreeNode *ans = nullptr;
-        vector<TreeNode*> to_find = {p, q};
-        nodes_found(root, to_find, ans);
-        return ans;
-    }
-
-    int nodes_found(TreeNode *root, vector<TreeNode*> &to_find, TreeNode *&ans) {
+    int helper(TreeNode* root, TreeNode *&ans, unordered_set<TreeNode *> &to_find) {
         if(root == nullptr) return 0;
-
-        int cnt = 0;
-        cnt += nodes_found(root->left, to_find, ans);
-        cnt += nodes_found(root->right, to_find, ans);
-
-        for(TreeNode* &n : to_find) {
-            if(root->val == n->val) {
-                ++cnt;
-            }
+        int count = helper(root->left, ans, to_find) + helper(root->right, ans, to_find);
+        if(to_find.find(root) != to_find.end()) {
+            ++count;
         }
-
-        if(cnt == to_find.size() && ans == nullptr) {
+        if(count == 2 && ans == nullptr) {
             ans = root;
         }
-        // printf("%d cnt = %d\n", root->val, cnt);
-        return cnt;
+        return count;
     }
 
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        TreeNode *ans = nullptr;
+        unordered_set<TreeNode *> to_find;
+        to_find.insert(p);
+        to_find.insert(q);
+        helper(root, ans, to_find);
+        return ans;
+    }
 };
