@@ -15,11 +15,10 @@ public:
         return helper(root, nullptr, nullptr);
     }
 
-    bool helper(TreeNode *root, TreeNode *min_node, TreeNode *max_node) {
+    bool helper(TreeNode *root, TreeNode* cur_min, TreeNode* cur_max) {
         if(root == nullptr) return true;
-        if(min_node && root->val <= min_node->val) return false;
-        if(max_node && root->val >= max_node->val) return false;
-        return helper(root->left, min_node, root) && helper(root->right, root, max_node);
+        if(cur_max && root->val >= cur_max->val) return false;
+        if(cur_min && root->val <= cur_min->val) return false;
+        return helper(root->left, cur_min, root) && helper(root->right, root, cur_max);
     }
-
 };
