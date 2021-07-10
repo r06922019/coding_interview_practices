@@ -20,6 +20,35 @@ class Solution {
 public:
     Node* connect(Node* root) {
         if(root == nullptr) return root;
+        Node *cur = root, *next_head = nullptr, *next_start = nullptr;
+        while(cur) {
+            while(cur) {
+                if(cur->left) {
+                    if(next_start == nullptr) {
+                        next_start = cur->left;
+                        next_head = cur->left;
+                    }
+                    else {
+                        next_head->next = cur->left;
+                        next_head = cur->left;
+                    }
+                }
+                if(cur->right) {
+                    if(next_start == nullptr) {
+                        next_start = cur->right;
+                        next_head = cur->right;
+                    }
+                    else {
+                        next_head->next = cur->right;
+                        next_head = cur->right;
+                    }
+                }
+                cur = cur ->next;
+            }
+            cur = next_start;
+            next_head = next_start = nullptr;
+        }
+        /*
         queue<Node *> q;
         q.push(root);
         while(q.size()) {
@@ -38,6 +67,7 @@ public:
                 }
             }
         }
+        */
         return root;
     }
 };
