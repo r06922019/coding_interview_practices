@@ -24,7 +24,8 @@ public:
             char cur_char = searchWord[i];
             searchWord[i] = '*';
             if(data.find(searchWord) != data.end()) {
-                if(data[searchWord].find(cur_char) == data[searchWord].end() || data[searchWord].size() > 1)
+                auto &s = data[searchWord];
+                if(s.find(cur_char) == s.end() || s.size() > 1)
                     return true;
             }
             searchWord[i] = cur_char;
