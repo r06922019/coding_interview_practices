@@ -11,3 +11,30 @@ public:
         return dp[n];
     }
 };
+
+class Solution {
+public:
+    int numSquares(int n) {
+        int steps = 0;
+        unordered_set<int> visited;
+        queue<int> q;
+        q.push(0);
+        while(q.size()) {
+            int q_size = q.size();
+            while(q_size--) {
+                int cur = q.front();
+                q.pop();
+                if(cur == n) return steps;
+                for(int i = 1; (cur+i*i) <= n; ++i) {
+                    int next = cur+i*i;
+                    if(visited.find(next) == visited.end()) {
+                        visited.insert(next);
+                        q.push(next);
+                    }
+                }
+            }
+            ++steps;
+        }
+        return 0;
+    }
+};
