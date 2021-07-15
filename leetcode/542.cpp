@@ -5,6 +5,7 @@ public:
         for(int i = 0; i < m; ++i) {
             for(int j = 0; j < n; ++j) {
                 if(mat[i][j]) {
+                    mat[i][j] = INT_MAX;
                     if(j-1 >= 0) mat[i][j] = min(mat[i][j], mat[i][j-1] + 1);
                     if(i-1 >= 0) mat[i][j] = min(mat[i][j], mat[i-1][j] + 1);
                 }
