@@ -1,47 +1,47 @@
-char DELIM = 12;
-
-string next_token(string s, char delim, int &index) {
-    if(index == s.size()) return "";
-    int new_index = index;
-    while(s[new_index] != delim)
-        ++new_index;
-    string ret = s.substr(index, new_index-index);
-    index = new_index+1;
+vector<string> get_tokens(string &s) {
+    char DELIM = '\f';
+    s += DELIM;
+    string cur = "";
+    vector<string> ret;
+    for(auto &c : s) {
+        if(c == DELIM) {
+            ret.push_back(cur);
+            cur = "";
+        }
+        else {
+            cur += c;
+        }
+    }
     return ret;
 }
 
-int determine_level(string &s, char target) {
-    int index = 0;
-    while(s[index] == target)
-        ++index;
-    return index;
+int sum_of_len(vector<string> &vec) {
+    int ans = 0;
+    for(auto &s : vec) {
+        ans += s.size();
+    }
+    return ans;
 }
 
-int longestPath(std::string file_system) {
-    int max_len = 0, index = 0, cur_stack_sum = 0;
-    file_system += DELIM;
-    stack<string> name_stack;
-    while(index < file_system.size()) {
-        string cur_name = next_token(file_system, DELIM, index);
-        int level = determine_level(cur_name, '\t');
-        cur_name = cur_name.substr(level);
+bool is_file(string &s) {
+    for(auto &c : s) {
+        if(c == '.') return true;
+    }
+    return false;
+}
 
-        while(!name_stack.empty() && name_stack.size() > level) {
-            cur_stack_sum -= name_stack.top().size();
-            name_stack.pop();
-        }
-
-        if(cur_name.find('.') != string::npos) { // is file
-            int cur_size = cur_stack_sum + cur_name.size() + name_stack.size();
-            max_len = max(max_len, cur_size);
-        }
-        else {
-            name_stack.push(cur_name);
-            cur_stack_sum += cur_name.size();
+int longestPath(string fileSystem) {
+    vector<string> tokens = get_tokens(fileSystem);
+    vector<string> cur_path;
+    int ans = 0;
+    for(auto &token : tokens) {
+        int level = 0;
+        while(token[level] == '\t') ++level;
+        while(cur_path.size() > level) cur_path.pop_back();
+        cur_path.push_back(token.substr(level));
+        if(is_file(token)) {
+            ans = max(ans, (int)(sum_of_len(cur_path) + cur_path.size()-1));
         }
     }
-    return max_len;
+    return ans;
 }
-
-
-
