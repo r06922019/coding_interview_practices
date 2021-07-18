@@ -11,31 +11,23 @@
 class Solution {
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        // https://stackoverflow.com/questions/5807735/c-priority-queue-with-lambda-comparator-error
-        auto greater_ListNodePtr = []( ListNode * a, ListNode * b ) { return a->val > b->val; };
-        priority_queue<ListNode *, vector<ListNode *>, decltype(greater_ListNodePtr)> pq(greater_ListNodePtr);
-
+        auto comp = [](const ListNode *a, const ListNode *b) { return a->val > b->val; };
+        priority_queue<ListNode *, vector<ListNode *>, decltype(comp)> pq(comp);
         ListNode *dummy = new ListNode(0);
-        ListNode *cur = dummy;
-
-        // fill in pq
-        for(ListNode *l : lists) {
+        for(auto &l : lists) {
             if(l) pq.push(l);
         }
-
-        // pop from pq
+        ListNode *cur = dummy;
         while(pq.size()) {
-            ListNode *node = pq.top();
+            auto top = pq.top();
             pq.pop();
-
-            ListNode *next_node_in_list = node->next;
-            node->next = nullptr;
-            if(next_node_in_list)
-                pq.push(next_node_in_list);
-
-            cur->next = node;
+            cur->next = top;
             cur = cur->next;
+            top = top->next;
+            if(top) pq.push(top);
         }
-        return dummy->next;
+        ListNode *ret = dummy->next;
+        delete dummy;
+        return ret;
     }
 };
