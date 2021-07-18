@@ -16,14 +16,31 @@ public:
         if(a != nullptr && b == nullptr) return a;
         if(a == nullptr && b != nullptr) return b;
 
-        // always pick a as the root
-        if(a->val < b->val) {
-            a->right = merge_trees(a->right, b);
+        // // always pick a as the root
+        // if(a->val < b->val) {
+        //     a->right = merge_trees(a->right, b);
+        // }
+        // else {
+        //     a->left = merge_trees(a->left, b);
+        // }
+
+        if(a->right == nullptr) {
+            a->right = b;
+            return a;
         }
-        else {
-            a->left = merge_trees(a->left, b);
+
+        // find rightmost child of a
+        TreeNode *rightmost_child_of_a = a, *parent = nullptr;
+        while(rightmost_child_of_a->right) {
+            parent = rightmost_child_of_a;
+            rightmost_child_of_a = rightmost_child_of_a->right;
         }
-        return a;
+        // no need to check if parent isn't null since it would return at line 27
+        // rightmost_child_of_a have no right child
+        parent->right = rightmost_child_of_a->left; // so taking the left one can do
+        rightmost_child_of_a->left = a;
+        rightmost_child_of_a->right = b;
+        return rightmost_child_of_a;
     }
 
     TreeNode* deleteNode(TreeNode* root, int key) {
