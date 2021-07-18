@@ -1,41 +1,52 @@
-std::vector<std::string> wordBoggle(std::vector<std::vector<char>> board, std::vector<std::string> words) {
-    vector<string> ans;
-    sort(words.begin(), words.end());
-    for(string &word : words) {
+bool is_valid(int i, int j, vector<vector<char>> &board) {
+    return (i >= 0 && i < board.size() && j >= 0 && j < board[i].size());
+}
+
+bool search_in_board(int i, int j, vector<vector<char>> &board,
+    vector<vector<bool>> &visited, int index, string &word) {
+    if(index == word.size()) return true;
+
+    bool found = false;
+    for(int di = -1; di <= 1 && !found; ++di) {
+        for(int dj = -1; dj <= 1 && !found; ++dj) {
+            if(is_valid(i+di, j+dj, board) && !visited[i+di][j+dj] && word[index] == board[i+di][j+dj]) {
+                visited[i+di][j+dj] = true;
+                if(search_in_board(i+di, j+dj, board, visited, index+1, word)) {
+                    found = true;
+                }
+                visited[i+di][j+dj] = false;
+            }
+        }
+    }
+    return found;
+}
+
+vector<string> wordBoggle(vector<vector<char>> board, vector<string> words) {
+    unordered_set<string> ans_set;
+    int m = board.size(), n = board[0].size();
+    vector<vector<bool>> visited(m, vector<bool>(n, false));
+    for(auto &word : words) {
+        if(word.empty()) {
+            ans_set.insert("");
+            continue;
+        }
         bool found = false;
-        for(int i = 0; i < board.size() && !found; ++i) {
-            for(int j = 0; j < board[i].size() && !found; ++j) {
-                if(board[i][j] == word[0]) {
-                    found = found | search_for(0, word, board, i, j);
+        for(int i = 0; i < m && !found; ++i) {
+            for(int j = 0; j < n && !found; ++j) {
+                if(word[0] == board[i][j]) {
+                    visited[i][j] = true;
+                    if(search_in_board(i, j, board, visited, 1, word)) {
+                        found = true;
+                    }
+                    visited[i][j] = false;
                 }
             }
         }
         if(found) {
-            ans.push_back(word);
+            ans_set.insert(word);
         }
     }
+    vector<string> ans(ans_set.begin(), ans_set.end());
+    sort(ans.begin(), ans.end());
     return ans;
 }
-
-bool search_for(int index, string &word, vector<vector<char>> &board, int i, int j) {
-    if(index+1 == word.size()) {
-        return true;
-    }
-    bool found = false;
-    board[i][j] = 0;
-    for(int new_i = i-1; new_i <= i+1 && !found; ++new_i) {
-        for(int new_j = j-1; new_j <= j+1 && !found; ++new_j) {
-            if(0 <= new_i && new_i < board.size()) {
-                if(0 <= new_j && new_j < board[new_i].size()) {
-                    if(board[new_i][new_j] == word[index+1]) {
-                        found = found | search_for(index+1, word, board, new_i, new_j);
-                    }
-                }
-            }
-        }
-    }
-
-    board[i][j] = word[index];
-    return found;
-}
-
