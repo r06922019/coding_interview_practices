@@ -1,17 +1,12 @@
-#include <queue>
-#include <cstdio>
-#include <vector>
-
-using namespace std;
-
-#define T int
-
-int main() {
-    auto comp = [](const T &a, const T &b) -> bool { return a > b; }; // min_queue
-    priority_queue<T, vector<T>, decltype(comp)> pq(comp);
-    for(int i = 0; i < 3; ++i) {
-        pq.push(i);
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        auto comp = [](const int a, const int b) { return a > b; };
+        priority_queue<int, vector<int>, decltype(comp)> pq(comp); // min pq uses greater comp
+        for(auto &num : nums) {
+            pq.push(num);
+            while(pq.size() > k) pq.pop();
+        }
+        return pq.top();
     }
-    printf("%d\n", pq.top());
-    return 0;
-}
+};
