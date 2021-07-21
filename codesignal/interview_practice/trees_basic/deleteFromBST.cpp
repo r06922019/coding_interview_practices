@@ -8,57 +8,48 @@
 //   Tree *right;
 // };
 
-Tree<int> *get_rightmost(Tree<int> *root) {
-    if(root == NULL) return NULL;
-    Tree<int> *rightmost = get_rightmost(root->right);
-    if(rightmost) return rightmost;
-    return root;
-}
-
-Tree<int> *remove_node(Tree<int> *node) {
-    if(node == NULL) return NULL;
-    if(node->left) {
-        // left subtree
-        Tree<int> *rightmost = get_rightmost(node->left);
-        node->value = rightmost->value;
-
-        if(node->left->value == rightmost->value) {
-            node->left = node->left->left;
-        }
-        else {
-            // weird way = =
-            Tree<int> *prev = node->left;
-            Tree<int> *cur = prev->right;
-            while(cur->value != rightmost->value) {
+Tree<int> *delete_in_bst(Tree<int> *root, int &num) {
+    if(root == nullptr) return nullptr;
+    if(num < root->value) {
+        root->left = delete_in_bst(root->left, num);
+        return root;
+    }
+    else if(root->value < num) {
+        root->right = delete_in_bst(root->right, num);
+        return root;
+    }
+    else { // root->value == num
+        if(root->left) {
+            // find the rightmost node of root->left
+            Tree<int> *cur = root->left, *prev = nullptr;
+            while(cur->right) {
                 prev = cur;
                 cur = cur->right;
             }
-            prev->right = cur->left;
+            if(prev) {
+                root->value = cur->value;
+                prev->right = cur->left;
+                delete cur;
+                return root;
+            }
+            else { // no right child in left tree
+                root->left->right = root->right;
+                Tree<int> *new_root = root->left;
+                delete root;
+                return new_root;
+            }
         }
-        return node;
+        else {
+            Tree<int> *new_root = root->right;
+            delete root;
+            return new_root;
+        }
     }
-    Tree<int> *right = node->right;
-    delete(node);
-    return right;
 }
 
-Tree<int> *delete_in_tree(Tree<int> *root, int q) {
-    if(root == NULL) return NULL;
-
-    if(q < root->value) {
-        root->left = delete_in_tree(root->left, q);
+Tree<int> * deleteFromBST(Tree<int> * t, vector<int> queries) {
+    for(auto &q : queries) {
+        t = delete_in_bst(t, q);
     }
-    else if(root->value < q) {
-        root->right = delete_in_tree(root->right, q);
-    }
-    else { // ==
-        root = remove_node(root);
-    }
-    return root;
-}
-
-Tree<int> * deleteFromBST(Tree<int> * t, std::vector<int> queries) {
-    for(int &q : queries)
-        t = delete_in_tree(t, q);
     return t;
 }
