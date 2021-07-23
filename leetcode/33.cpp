@@ -1,24 +1,25 @@
 class Solution {
 public:
+    int get_group(vector<int>& nums, int target, int l, int r) {
+        if(target > nums[r]) return 0;
+        return 1;
+    }
+
     int search(vector<int>& nums, int target) {
         int l = 0, r = nums.size()-1;
         while(l < r) {
             int mid = l + (r-l)/2;
-            // printf("l = %d, mid = %d, r = %d\n", l, mid, r);
-            if(nums[l] <= nums[mid]) { // l~mid is sorted
-                if(nums[l] <= target && target <= nums[mid])
-                    r = mid;
-                else
-                    l = mid+1;
+            int target_group = get_group(nums, target, l, r);
+            int mid_group = get_group(nums, nums[mid], l, r);
+            // printf("%d, %d, %d\n", l, mid, r);
+            if((target_group == mid_group && target <= nums[mid]) ||
+               (target_group != mid_group && target > nums[mid])) {
+                r = mid;
             }
-            else { // mid+1~r is sorted
-                if(nums[mid] < target && target <= nums[r])
-                    l = mid+1;
-                else
-                    r = mid;
+            else {
+                l = mid+1;
             }
         }
-        // printf("l = %d, r = %d\n", l, r);
         if(nums[l] != target) return -1;
         return l;
     }
