@@ -1,57 +1,37 @@
 class Solution {
 public:
     string minWindow(string s, string t) {
-        unordered_map<char, int> t_counter, cur_counter;
-        for(char &c : t) {
+        unordered_map<char, int> t_counter, s_counter;
+        for(auto &c : t) {
             ++t_counter[c];
         }
-
-        int l = 0, r = 0, cur_len = 0, min_len = INT_MAX;
         string ans = "";
-        while(r < s.size()) {
-
-            // extend
-            while(r < s.size() && cur_len < t.size()) {
-                char &c = s[r];
-                if(t_counter.find(c) != t_counter.end()) {
-                    if(cur_counter.find(c) == cur_counter.end() || cur_counter[c] < t_counter[c]) {
-                        ++cur_len;
-                    }
-                    ++cur_counter[c];
-                }
-                ++r;
+        int matched = 0, l = 0;
+        for(int r = 0; r < s.size(); ++r) {
+            ++s_counter[s[r]];
+            if(t_counter.find(s[r]) != t_counter.end() &&
+               s_counter[s[r]] == t_counter[s[r]]) {
+                ++matched;
             }
-
-            // pop useless ones
-            while(l < r && cur_len == t.size()) {
-                char &c = s[l];
-                if(t_counter.find(c) == t_counter.end()) {
+            if(matched == t_counter.size()) {
+                // pop to get the minimum
+                while(t_counter.find(s[l]) == t_counter.end() ||
+                      s_counter[s[l]] > t_counter[s[l]]) {
+                    --s_counter[s[l]];
                     ++l;
                 }
-                else if(cur_counter[c] > t_counter[c]) {
-                    --cur_counter[c];
-                    ++l;
-                }
-                else {
-                    break;
+                // record ans
+                if(ans == "" || ans.size() > r-l+1) {
+                    ans = s.substr(l, r-l+1);
                 }
             }
-
-            // record len if valid
-            if(cur_len == t.size() && (r-l) < min_len) {
-                min_len = r-l;
-                ans = s.substr(l, r-l);
-            }
-
-            // pop 1 useful
-            while(l < r && cur_len == t.size()) {
-                char &c = s[l];
-                if(t_counter.find(c) != t_counter.end()) {
-                    if(cur_counter[c] == t_counter[c]) {
-                        --cur_len;
-                    }
-                    --cur_counter[c];
+            // pop an extra to create space
+            while(matched == t_counter.size()) {
+                if(t_counter.find(s[l]) != t_counter.end()
+                   && s_counter[s[l]] == t_counter[s[l]]) {
+                    --matched;
                 }
+                --s_counter[s[l]];
                 ++l;
             }
         }
