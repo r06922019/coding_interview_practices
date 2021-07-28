@@ -1,69 +1,77 @@
 class Solution {
 public:
-    void perform(stack<int> &num_stack, stack<char> &op_stack) {
-        int b = num_stack.top();
-        num_stack.pop();
-        int a = num_stack.top();
-        if(op_stack.top() == '+') {
-            num_stack.top() = (a+b);
+    void do_ops(stack<int> &nums, stack<char> &ops) {
+        char op = ops.top();
+        ops.pop();
+        int b = nums.top();
+        nums.pop();
+        int a = 0;
+        if(op == '-') {
+            if(nums.size()) {
+                a = nums.top();
+                nums.pop();
+            }
         }
-        else if(op_stack.top() == '-') {
-            num_stack.top() = (a-b);
+        else {
+            a = nums.top();
+            nums.pop();
         }
-        else if(op_stack.top() == '*') {
-            num_stack.top() = (a*b);
+        // printf("%d%c%d\n", a, op, b);
+        if(op == '+') {
+            nums.push(a+b);
         }
-        else if(op_stack.top() == '/') {
-            num_stack.top() = (a/b);
+        else if(op == '-') {
+            nums.push(a-b);
         }
-        op_stack.pop();
-
-        return ;
+        else if(op == '*') {
+            nums.push(a*b);
+        }
+        else if(op == '/') {
+            nums.push(a/b);
+        }
     }
 
     int calculate(string s) {
         unordered_map<char, int> priority = {
-            {'+', 0},
-            {'-', 0},
-            {'*', 1},
-            {'/', 1},
+            {'(', -1},
+            {'+', 0}, {'-', 0},
+            {'*', 1}, {'/', 1}
         };
 
-        stack<int> num_stack;
-        stack<char> op_stack;
-        int num = 0, i = 0;
-        while(i < s.size()) {
-            char &c = s[i];
+        s += " ";
+        string num;
+        stack<int> nums;
+        stack<char> ops;
+        for(auto &c : s) {
+            // printf("%c\n", c);
             if(isdigit(c)) {
-                while(i < s.size() && isdigit(s[i])) {
-                    num = num * 10 + (s[i] - '0');
-                    ++i;
+                num += c;
+            }
+            else {
+                if(num.size()) {
+                    nums.push(stoi(num));
+                    num = "";
                 }
-                num_stack.push(num);
-                num = 0;
-                --i;
-            }
-            else if(c == ')') {
-                while(op_stack.size() && op_stack.top() != '(') {
-                    perform(num_stack, op_stack);
+                if(c == '(') {
+                    ops.push(c); // (
                 }
-                op_stack.pop();
-            }
-            else if(c == '(') {
-                op_stack.push(c);
-            }
-            else if(c != ' ') {
-                while(op_stack.size() && op_stack.top() != '(' && priority[c] <= priority[op_stack.top()]) {
-                    perform(num_stack, op_stack);
+                else if(c == ')') {
+                    while(ops.top() != '(') {
+                        do_ops(nums, ops);
+                    }
+                    ops.pop(); // (
                 }
-                op_stack.push(c);
-                printf("pushing %c\n", c);
+                else if(priority.find(c) != priority.end()) {
+                    while(ops.size() && priority[ops.top()] >= priority[c]) {
+                        do_ops(nums, ops);
+                    }
+                    ops.push(c);
+                }
             }
-            ++i;
         }
-        while(op_stack.size()) {
-            perform(num_stack, op_stack);
+        while(ops.size()) {
+            do_ops(nums, ops);
         }
-        return num_stack.top();
+        return nums.top();
     }
 };
