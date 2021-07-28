@@ -7,12 +7,6 @@ public:
             fives += n/x;
             x *= 5;
         }
-        int twos = 0;
-        x = 2;
-        while(x <= n) {
-            twos += n/x;
-            x *= 2;
-        }
-        return min(twos, fives);
+        return fives;
     }
 };
