@@ -47,7 +47,8 @@ public:
         ++in_degrees[b];
     }
 
-    void erase_edge(unordered_map<int, unordered_set<int>> &adj_lists, vector<int> &edge) {
+    void erase_edge(unordered_map<int, unordered_set<int>> &adj_lists, vector<int> &edge,
+                    vector<int> &in_degrees, int &root_candidate) {
         int a = edge[0], b = edge[1];
         adj_lists[a].erase(b);
         --in_degrees[b];
@@ -61,14 +62,16 @@ public:
         unordered_map<int, unordered_set<int>> adj_lists;
         int root_candidate = n;
         for(auto &edge : edges) {
-            add_edge(adj_lists, edge);
+            add_edge(adj_lists, edge, in_degrees, root_candidate);
 
         }
         reverse(edges.begin(), edges.end());
         for(auto &edge : edges) {
-            erase_edge(adj_lists, edge);
-            if(!has_cycle(n, adj_lists) && root_candidate == 1) return edge;
-            add_edge(adj_lists, edge);
+            erase_edge(adj_lists, edge, in_degrees, root_candidate);
+            if(!has_cycle(n, adj_lists) \
+               && root_candidate == 1 \
+               && *max_element(in_degrees.begin(), in_degrees.end()) == 1) return edge;
+            add_edge(adj_lists, edge, in_degrees, root_candidate);
         }
         return vector<int>();
     }
