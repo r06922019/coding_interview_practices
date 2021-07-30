@@ -1,26 +1,30 @@
 class Solution {
 public:
-    int get_cost(string &s, int l, int r) {
-        int cost = 0;
-        while(l < r) {
-            if(s[l] != s[r]) {
-                ++cost;
+    vector<vector<int>> get_costs(string &s) {
+        int n = s.size();
+        vector<vector<int>> costs(n, vector<int>(n, 0));
+        for(int len = 1; len <= n; ++len) {
+            for(int i = 0; i < n && i+len-1 < n; ++i) {
+                if(len == 1) {
+                    costs[i][i+len-1] = 0;
+                }
+                else {
+                    // compare s[i] and s[i+len-1]
+                    if(s[i] == s[i+len-1]) {
+                        costs[i][i+len-1] = costs[i+1][i+len-2];
+                    }
+                    else {
+                        costs[i][i+len-1] = costs[i+1][i+len-2]+1;
+                    }
+                }
             }
-            ++l;
-            --r;
         }
-        return cost;
+        return costs;
     }
 
     int palindromePartition(string s, int k) {
         int n = s.size();
-        vector<vector<int>> costs(n, vector<int>(n, 0));
-        for(int i = 0; i < n; ++i) {
-            for(int j = 0; j < n; ++j) {
-                costs[i][j] = get_cost(s, i, j);
-            }
-        }
-
+        vector<vector<int>> costs = get_costs(s);
         vector<vector<int>> dp(k+1, vector<int>(n+1, 200));
         for(int i = 0; i <= k; ++i) {
             dp[i][0] = 0;
