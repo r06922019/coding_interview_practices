@@ -1,32 +1,35 @@
 class Solution {
 public:
     bool isMatch(string s, string p) {
-        vector<vector<bool>> dp(p.size()+1, vector<bool>(s.size()+1, false));
+        int m = p.size(), n = s.size();
+        vector<vector<bool>> dp(m+1, vector<bool>(n+1, false));
         dp[0][0] = true;
-        // dp[0][j] = false
-        // dp[i][0]
-        for(int i = 1; i <= p.size(); ++i) {
-            char &cur_p = p[i-1];
-            if(cur_p == '*') {
+        // for(int j = 1; j <= n; ++j) dp[0][j] = false;
+        for(int i = 1; i <= m; ++i) {
+            if(p[i-1] == '*') {
                 dp[i][0] = dp[i-1][0];
             }
         }
 
-        for(int i = 1; i <= p.size(); ++i) {
-            char &cur_p = p[i-1];
-            bool result = dp[i-1][0];
-            for(int j = 1; j <= s.size(); ++j) {
-                char &cur_s = s[j-1];
-                result = result || dp[i-1][j];
-                if(cur_p == '*') {
-                    // OR { dp[i-1][x] for x from 0 to j }
-                    dp[i][j] = result;
+        for(int i = 1; i <= m; ++i) {
+            bool prev_result = dp[i-1][0];
+            for(int j = 1; j <= n; ++j) {
+                prev_result = prev_result || dp[i-1][j];
+                if(p[i-1] == '?') {
+                    dp[i][j] = dp[i-1][j-1];
+                }
+                else if(p[i-1] == '*') {
+                    // dp[i][j] = sum(dp[i-1][0..j]);
+                    dp[i][j] = prev_result;
                 }
                 else {
-                    dp[i][j] = (cur_p == '?' || (cur_p == cur_s)) && dp[i-1][j-1];
+                    if(p[i-1] == s[j-1]) {
+                        dp[i][j] = dp[i-1][j-1];
+                    }
                 }
             }
         }
-        return dp[p.size()][s.size()];
+
+        return dp[m][n];
     }
 };
