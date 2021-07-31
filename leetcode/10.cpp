@@ -1,49 +1,51 @@
 class Solution {
 public:
-    vector<string> parse_string(string &p) {
-        vector<string> ret;
-        for(char &c : p) {
-            if(c != '*') {
-                ret.push_back("");
+
+    vector<string> tokenize(string &p) {
+        vector<string> ans;
+        for(auto &c : p) {
+            if(c == '*') {
+                ans.back() += c;
             }
-            ret.back() += c;
+            else {
+                ans.push_back(string(1, c));
+            }
         }
-        return ret;
+        return ans;
     }
 
     bool isMatch(string s, string _p) {
-        vector<string> p = parse_string(_p);
-        vector<vector<bool>> dp(p.size()+1, vector<bool>(s.size()+1, false));
+        vector<string> p = tokenize(_p);
+        int m = p.size(), n = s.size();
+        vector<vector<bool>> dp(m+1, vector<bool>(n+1, false));
         dp[0][0] = true;
-        // dp[0][j] = false;
-        // dp[i][0]
-        for(int i = 1; i <= p.size(); ++i) {
-            if(p[i-1].size() == 2)
+        for(int i = 1; i <= m; ++i) {
+            if(p[i-1].back() == '*') {
                 dp[i][0] = dp[i-1][0];
+            }
         }
-
-        for(int i = 1; i <= p.size(); ++i) {
-            string &cur_token = p[i-1];
-            char &cur_p = cur_token[0];
-            bool result = dp[i-1][0];
-            for(int j = 1; j <= s.size(); ++j) {
-                char &cur_s = s[j-1];
-                if(isalpha(cur_p) && cur_p != cur_s) {
-                    result = dp[i-1][j];
+        // for(int j = 1; j <= n; ++j) {
+        //     dp[0][j] = false;
+        // }
+        for(int i = 1; i <= m; ++i) {
+            auto &p_char = p[i-1][0];
+            bool p_is_single = p[i-1].size() == 1;
+            for(int j = 1; j <= n; ++j) {
+                auto &s_char = s[j-1];
+                if(p_is_single) {
+                    if(p_char == '.' || p_char == s_char) {
+                        dp[i][j] = dp[i-1][j-1];
+                    }
                 }
-                else { // . or equal
-                    result = result || dp[i-1][j];
-                }
-
-                if(cur_token.size() == 1) {
-                    dp[i][j] = (cur_p == '.' || cur_p == cur_s) && dp[i-1][j-1];
-                }
-                else { // a*
-                    dp[i][j] = result;
+                else {
+                    // matches empty
+                    dp[i][j] = dp[i][j] || dp[i-1][j];
+                    if(p_char == '.' || p_char == s_char) {
+                        dp[i][j] = dp[i][j] || dp[i][j-1];
+                    }
                 }
             }
         }
-
-        return dp[p.size()][s.size()];
+        return dp[m][n];
     }
 };
