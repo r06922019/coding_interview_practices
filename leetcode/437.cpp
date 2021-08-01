@@ -54,7 +54,6 @@ public:
         }
         return ans;
     }
-
 };
 
 class Solution {
