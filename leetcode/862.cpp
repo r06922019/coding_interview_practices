@@ -23,10 +23,14 @@ public:
         deque<pair<int, int>> deq;
         for(int i = 0; i <= n; ++i) {
             auto num = acc[i];
+            // popping all arrays that meet the conditions
             while(deq.size() && (num - deq.front().second) >= k) {
                 min_len = min(min_len, i-deq.front().first);
                 deq.pop_front();
             }
+            // num is better because if
+            // deq.back() forms a result with some later elemnt
+            // changing to num will always result in a shorter ans
             while(deq.size() && deq.back().second >= num) {
                 deq.pop_back();
             }
