@@ -1,5 +1,30 @@
 class Solution {
 public:
+    bool is_palin(string &s, int l, int r) {
+        if(l < 0 || r >= s.size() || s[l] != s[r]) return false;
+        while(l < r) {
+            if(s[l] != s[r]) return false;
+            ++l;
+            --r;
+        }
+        return true;
+    }
+    string shortestPalindrome(string s) {
+        string prefix = "";
+        int n = s.size();
+        for(int i = n-1; i >= 1; --i) {
+            if(is_palin(s, 0, i)) {
+                break;
+            }
+            prefix += s[i];
+        }
+
+        return prefix + s;
+    }
+};
+
+class Solution {
+public:
     int BASE = 3, MOD = 29;
 
     string shortestPalindrome(string s) {
