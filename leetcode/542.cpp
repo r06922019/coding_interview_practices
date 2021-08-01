@@ -1,5 +1,3 @@
-// bfs from zeros
-
 // dp
 class Solution {
 public:
