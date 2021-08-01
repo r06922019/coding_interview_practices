@@ -1,17 +1,13 @@
 class Solution {
 public:
+    unordered_map<int, int> dp = {{1,1},{0,1}};
     int numTrees(int n) {
-        if(n < 1) return 0;
-        if(n == 1) return 1;
-        // n > 1
-
-        vector<int> dp(n+1, 0);
-        dp[0] = dp[1] = 1;
-        for(int i = 2; i <= n; ++i) {
-            for(int left = 0; left < i; ++left) {
-                dp[i] += dp[left] * dp[i-1-left]; // left, root, right
-            }
+        if(dp.find(n) != dp.end()) return dp[n];
+        int ans = 0;
+        for(int i = 1; i <= n; ++i) {
+            ans += numTrees(i-1) * numTrees(n-i);
         }
-        return dp[n];
+        dp[n] = ans;
+        return ans;
     }
 };
