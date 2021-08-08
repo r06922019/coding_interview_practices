@@ -62,23 +62,21 @@ public:
         return groups;
     }
 
-    int get_parent(unordered_map<int, int> &parent, int x) {
-        int x_parent = x;
+    int get_parent(vector<int> &parent, int x) {
         if(parent[x] != x) {
-            x_parent = get_parent(parent, parent[x]);
-            parent[x] = x_parent;
+            parent[x] = get_parent(parent, parent[x]);
         }
-        return x_parent;
+        return parent[x];
     }
 
-    void merge_group(unordered_map<int, int> &parent, int x, int y) {
+    void merge_group(vector<int> &parent, int x, int y) {
         int x_parent = get_parent(parent, x);
         int y_parent = get_parent(parent, y);
         parent[y_parent] = x_parent;
     }
 
-    vector<vector<int>> group_with_uf(vector<vector<int>> &nums_pos,
-                                        unordered_map<int, int> &parent,
+    unordered_map<int, vector<int>> group_with_uf(vector<vector<int>> &nums_pos,
+                                        vector<int> &parent,
                                        int start, int end,
                                        int m, int n) {
         vector<int> row_groups(m, -1), col_groups(n, -1);
@@ -102,11 +100,7 @@ public:
         for(int k = start; k < end; ++k) {
             group_to_members[ get_parent(parent, k) ].push_back(k);
         }
-        vector<vector<int>> groups;
-        for(const auto &p : group_to_members) {
-            groups.push_back(p.second);
-        }
-        return groups;
+        return group_to_members;
     }
 
     vector<vector<int>> matrixRankTransform(vector<vector<int>>& matrix) {
@@ -119,7 +113,7 @@ public:
             }
         }
         sort(nums_pos.begin(), nums_pos.end());
-        unordered_map<int, int> parent;
+        vector<int> parent(nums_pos.size(), 0);
         for(int k = 0; k < nums_pos.size(); ++k) {
             parent[k] = k;
         }
@@ -131,8 +125,9 @@ public:
                   && nums_pos[new_index][0] == num) {
                 ++new_index;
             }
-            vector<vector<int>> groups = group_with_uf(nums_pos, parent, index, new_index, m, n);
-            for(const auto &group : groups) {
+            unordered_map<int, vector<int>> groups = group_with_uf(nums_pos, parent, index, new_index, m, n);
+            for(const auto &p : groups) {
+                const auto &group = p.second;
                 int rank = 0;
                 for(const auto &k : group) {
                     int i = nums_pos[k][1];
