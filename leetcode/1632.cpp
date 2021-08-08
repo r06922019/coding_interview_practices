@@ -81,8 +81,8 @@ public:
                                        int m, int n) {
         vector<int> row_groups(m, -1), col_groups(n, -1);
         for(int k = start; k < end; ++k) {
-            int i = nums_pos[k][1];
-            int j = nums_pos[k][2];
+            const int &i = nums_pos[k][1];
+            const int &j = nums_pos[k][2];
             if(row_groups[i] == -1) {
                 row_groups[i] = k;
             }
@@ -130,14 +130,14 @@ public:
                 const auto &group = p.second;
                 int rank = 0;
                 for(const auto &k : group) {
-                    int i = nums_pos[k][1];
-                    int j = nums_pos[k][2];
+                    const int &i = nums_pos[k][1];
+                    const int &j = nums_pos[k][2];
                     rank = max(rank, max(row_max[i], col_max[j]));
                 }
                 ++rank;
                 for(const auto &k : group) {
-                    int i = nums_pos[k][1];
-                    int j = nums_pos[k][2];
+                    const int &i = nums_pos[k][1];
+                    const int &j = nums_pos[k][2];
                     ans[i][j] = row_max[i] = col_max[j] = rank;
                 }
             }
