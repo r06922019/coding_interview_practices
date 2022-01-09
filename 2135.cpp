@@ -1,3 +1,30 @@
+// sorted string set
+class Solution {
+public:
+    
+    int wordCount(vector<string>& startWords, vector<string>& targetWords) {
+        unordered_set<string> startWordSet;
+        for(auto word : startWords) {
+            sort(word.begin(), word.end());
+            startWordSet.insert(word);
+        }
+        
+        int ans = 0;
+        for(auto word : targetWords) {
+            sort(word.begin(), word.end());
+            for(int i = 0; i < word.size(); ++i) {
+                if(startWordSet.count(word.substr(0,i) + word.substr(i+1))) {
+                    ++ans;
+                    break;
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
+
+// Vector Hash 
 class VectorHash
 {
 public:
@@ -26,7 +53,6 @@ public:
 
     int wordCount(vector<string> &startWords, vector<string> &targetWords)
     {
-        VectorHash hasher;
         unordered_map<vector<int>, int, VectorHash> counter;
         vector<int> vec(26, 0);
         for (auto word : startWords)
