@@ -1,53 +1,44 @@
 class Solution {
 public:
-    int myAtoi(string str) {
-        int index = 0;
-        // first discards as many whitespace characters as necessary
-        // until the first non-whitespace character is found.
-        while(isspace(str[index])) ++index;
-
-        // takes an optional initial plus or minus sign
-        // followed by as many numerical digits as possible,
-        // and interprets them as a numerical value.
-        if(str[index] == '+') {
-            return parse_from(str, index+1, 1);
-        }
-        else if(str[index] == '-'){
-            return parse_from(str, index+1, -1);
-        }
-        else if(isdigit(str[index])) {
-            return parse_from(str, index, 1);
-        }
-        return 0;
-    }
-
-    int parse_from(string str, int index, int sign) {
-        int num = 0;
-        while(isdigit(str[index])) {
-            int cur_digit = str[index]-'0';
-            // num = num * 10 + cur_digit;
-            if(sign > 0) { // positive number
-                if(num > INT_MAX/10) {
-                    return INT_MAX;
+    int myAtoi(string s) {
+        if(s.size() == 0) return 0;
+        int index = 0, num = 0;
+        bool is_positive = true;
+        
+        // ignore spaces
+        while(isspace(s[index])) ++index;
+        
+        // check if we have sign
+        if(s[index] == '+' || s[index] == '-' || isdigit(s[index])) {
+            // eat sign
+            if(s[index] == '+' || s[index] == '-') {
+                if(s[index] == '-') {
+                    is_positive = false;
                 }
-                num *= 10;
-                if(num > INT_MAX - cur_digit) {
-                    return INT_MAX;
-                }
-                num += cur_digit;
+                ++index;
             }
-            else { // negative number
-                if(num < INT_MIN/10) {
-                    return INT_MIN;
+            
+            // eat digits
+            while(isdigit(s[index])) {
+                int digit = s[index] - '0';
+                if(is_positive) {
+                    // num = num * 10 + digit;
+                    if(num > INT_MAX/10) return INT_MAX;
+                    num = num * 10;
+                    if(num > INT_MAX-digit) return INT_MAX;
+                    num = num + digit;
                 }
-                num *= 10;
-                if(num < INT_MIN + cur_digit) {
-                    return INT_MIN;
+                else {
+                    // num = num * 10 - digit;
+                    if(num < INT_MIN/10) return INT_MIN;
+                    num = num * 10;
+                    if(num < INT_MIN+digit) return INT_MIN;
+                    num = num - digit;
                 }
-                num -= cur_digit;
+                ++index;
             }
-            ++index;
         }
+        
         return num;
     }
 };
