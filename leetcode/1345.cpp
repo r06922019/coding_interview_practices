@@ -1,42 +1,40 @@
-class Solution {
+class Solution
+{
 public:
-    void enqueue_if_valid_and_unvisited(int index, vector<int>& arr,
-                                        queue<int> &q, vector<bool> &visited) {
-        if(index >= 0 && index < arr.size() && !visited[index]) {
-            visited[index] = true;
-            q.push(index);
-        }
-    }
-
-    int minJumps(vector<int>& arr) {
+    int minJumps(vector<int> &arr)
+    {
+        unordered_map<int, vector<int> > val_to_index;
         int n = arr.size();
-        unordered_map<int, vector<int>> value_to_indexs;
-        for(int i = 0; i < n; ++i) {
-            value_to_indexs[arr[i]].push_back(i);
-        }
+        for (int i = 0; i < n; ++i)
+            val_to_index[arr[i]].push_back(i);
 
         int steps = 0;
-        vector<bool> visited(n, false);
         queue<int> q;
         q.push(0);
-        visited[0] = true;
-        if(visited[n-1]) return steps;
-        while(q.size()) {
-            int q_size = q.size();
-            while(q_size--) {
+        vector<bool> visited(arr.size(), false);
+        while (q.size())
+        {
+            n = q.size();
+            while (n--)
+            {
                 int cur = q.front();
-                // printf("%d ", cur);
                 q.pop();
-                enqueue_if_valid_and_unvisited(cur-1, arr, q, visited);
-                enqueue_if_valid_and_unvisited(cur+1, arr, q, visited);
-                for(auto &next : value_to_indexs[arr[cur]])
-                    enqueue_if_valid_and_unvisited(next, arr, q, visited);
-                value_to_indexs[arr[cur]].clear(); // ensure only expanded once
+                if (cur == arr.size() - 1)
+                    return steps;
+                auto cands = val_to_index[arr[cur]];
+                val_to_index.erase(arr[cur]);
+                for (auto x : {cur - 1, cur + 1})
+                    if (x >= 0 && x < arr.size() && !visited[x])
+                        cands.push_back(x);
+                for (auto &x : cands)
+                {
+                    q.push(x);
+                    visited[x] = true;
+                }
             }
             ++steps;
-            if(visited[n-1]) return steps;
-            // puts("");
         }
+
         return -1;
     }
 };
