@@ -1,60 +1,94 @@
-class TrieNode {
+class Node
+{
 public:
     int count = 0;
-    TrieNode* children[2] = {nullptr, nullptr};
-    TrieNode() {}
+    vector<Node *> children = {nullptr, nullptr};
+
+    Node() {}
+
+    bool has_end()
+    {
+        return count > 0;
+    }
+
+    void set_end()
+    {
+        ++count;
+    }
+
+    Node *get_child(int key)
+    {
+        if (!has_child(key))
+        {
+            children[key] = new Node();
+        }
+        return children[key];
+    }
+
+    bool has_child(int key)
+    {
+        return children[key] != nullptr;
+    }
 };
 
-class Trie {
+class Tree
+{
 public:
-    TrieNode *root = nullptr;
+    Node *root = nullptr;
 
-    Trie() {
-        root = new TrieNode();
+    Tree()
+    {
+        root = new Node();
     }
 
-    void insert(int &num) {
-        TrieNode *cur = root;
-        for(int i = 30; i >= 0; --i) {
-            int cur_bit = ((1<<i) & num)? 1:0;
-            if(cur->children[cur_bit] == nullptr) {
-                cur->children[cur_bit] = new TrieNode();
-            }
-            cur = cur->children[cur_bit];
+    void insert(int num)
+    {
+        Node *cur = root;
+        for (int i = 30; i >= 0; --i)
+        {
+            int key = ((1 << i) & num) >> i;
+            cur = cur->get_child(key);
         }
-        ++cur->count;
+        cur->set_end();
     }
 
-    int search_for_max_xor(int &num) {
+    int find_xor_max(int num)
+    {
+        Node *cur = root;
+        int ret = 0;
+        for (int i = 30; i >= 0; --i)
+        {
+            int key = ((1 << i) & num) >> i;
+            int target_key = key ^ 1;
+            if (cur->has_child(target_key))
+            {
+                cur = cur->get_child(target_key);
+                ret = ret | (1 << i);
+            }
+            else
+            {
+                cur = cur->get_child(key);
+            }
+        }
+        return ret;
+    }
+};
+
+class Solution
+{
+public:
+    int findMaximumXOR(vector<int> &nums)
+    {
+        Tree tree;
+        for (auto num : nums)
+        {
+            tree.insert(num);
+        }
+
         int ans = 0;
-        TrieNode *cur = root;
-        for(int i = 30; i >= 0; --i) {
-            int cur_bit = ((1<<i) & num)? 1:0;
-            int cur_inv_bit = ((1<<i) & num)? 0:1;
-            if(cur->children[cur_inv_bit]) {
-                cur = cur->children[cur_inv_bit];
-                ans |= (cur_inv_bit<<i);
-            }
-            else {
-                cur = cur->children[cur_bit];
-                ans |= (cur_bit<<i);
-            }
-        }
-        return ans;
-    }
-};
-
-class Solution {
-public:
-    int findMaximumXOR(vector<int>& nums) {
-        Trie trie;
-        for(auto &num : nums) {
-            trie.insert(num);
-        }
-        int ans = INT_MIN;
-        for(auto &num : nums) {
-            int x = trie.search_for_max_xor(num);
-            ans = max(ans, x ^ num);
+        for (auto num : nums)
+        {
+            ans = max(ans, tree.find_xor_max(num));
         }
         return ans;
     }

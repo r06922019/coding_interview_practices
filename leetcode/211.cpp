@@ -1,100 +1,106 @@
-class TrieNode {
+class TrieNode
+{
 public:
+    unordered_map<char, TrieNode *> children;
     int count = 0;
-    unordered_map<char, TrieNode*> children;
-    TrieNode(){}
+
+    TrieNode() {}
+
+    void add_end()
+    {
+        ++count;
+    }
+
+    bool has_end()
+    {
+        return count > 0;
+    }
+
+    TrieNode *get_child(char c)
+    {
+        if (!has_child(c))
+        {
+            children[c] = new TrieNode();
+        }
+        return children[c];
+    }
+
+    bool has_child(char c)
+    {
+        return children.find(c) != children.end();
+    }
 };
 
-class Trie {
+class Trie
+{
 public:
     TrieNode *root = nullptr;
-    Trie() {
-        root = new TrieNode();
-    }
-    const bool EXPAND_AT_INSERT = false;
-    const bool EXPAND_AT_SEARCH = true;
-    void insert(string &word) {
-        if(EXPAND_AT_INSERT) {
-            insert(word, root, 0);
-        }
-        else {
-            TrieNode *cur = root;
-            for(auto &c : word) {
-                if(cur->children.find(c) == cur->children.end()) {
-                    cur->children[c] = new TrieNode();
-                }
-                cur = cur->children[c];
-            }
-            ++cur->count;
-        }
+
+    Trie() : root(new TrieNode()) {}
+
+    void insert(const string &word)
+    {
+        insert(word, 0, root);
     }
 
-    void insert(string &word, TrieNode *cur, int index) {
-        if(index == word.size()) {
-            ++cur->count;
-            return ;
+    void insert(const string &word, int index, TrieNode *cur_node)
+    {
+        if (index >= word.size())
+        {
+            cur_node->add_end();
+            return;
         }
-        for(auto &c : {'.', word[index]}) {
-            if(cur->children.find(c) == cur->children.end()) {
-                cur->children[c] = new TrieNode();
-            }
-            insert(word, cur->children[c], index+1);
-        }
+        auto &cur_char = word[index];
+        insert(word, index + 1, cur_node->get_child(cur_char));
+        // insert(word, index+1, cur_node->get_child('.')); -> results in 2^l insert
     }
 
-    bool search(string &word) {
-        if(EXPAND_AT_SEARCH) {
-            return search(word, 0, root);
-        }
-        else {
-            TrieNode *cur = root;
-            for(auto &c : word) {
-                if(cur->children.find(c) == cur->children.end()) {
-                    return false;
-                }
-                cur = cur->children[c];
-            }
-            return cur->count > 0;
-        }
-        return false; // dummy
+    bool search(const string &word)
+    {
+        return search(word, 0, root);
     }
 
-    bool search(string &word, int index, TrieNode *cur) {
-        if(index >= word.size()) {
-            return cur->count > 0;
+    bool search(const string &word, int index, TrieNode *cur_node)
+    {
+        if (index >= word.size())
+        {
+            return cur_node->has_end();
         }
-        auto &c = word[index];
-        if(c == '.') {
-            for(auto &p : cur->children) {
-                if(search(word, index+1, p.second))
+
+        auto c = word[index];
+        if (c == '.')
+        {
+            for (auto &p : cur_node->children)
+            {
+                if (search(word, index + 1, p.second))
+                {
                     return true;
+                }
             }
-            return false;
         }
-        else {
-            if(cur->children.find(c) == cur->children.end()) {
-                return false;
-            }
-            return search(word, index+1, cur->children[c]);
+        else if (cur_node->has_child(c))
+        {
+            return search(word, index + 1, cur_node->get_child(c));
         }
-        return false; // dummy
+        return false;
     }
-
 };
 
-class WordDictionary {
+class WordDictionary
+{
 public:
-    /** Initialize your data structure here. */
     Trie trie;
-    WordDictionary() {
-
+    WordDictionary()
+    {
     }
 
-    void addWord(string word) {
+    void addWord(string word)
+    {
         trie.insert(word);
     }
 
-    bool search(string word) {
+    bool search(string word)
+    {
         return trie.search(word);
     }
 };

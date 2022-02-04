@@ -1,29 +1,33 @@
-class Item {
+class Item
+{
 public:
-    int index, height;
-    Item(int _i, int _h) {
-        index = _i;
-        height = _h;
+    int h, i;
+    Item(int h_, int i_)
+    {
+        i = i_;
+        h = h_;
     }
 };
 
-class Solution {
+class Solution
+{
 public:
-    int largestRectangleArea(vector<int>& heights) {
-        stack<Item> s;
+    int largestRectangleArea(vector<int> &heights)
+    {
         heights.push_back(0);
-        int n = heights.size(), ans = 0;
-        for(int i = 0; i < n; ++i) {
-            auto &h = heights[i];
+        int ans = 0;
+        stack<Item> st;
+        for (int i = 0; i < heights.size(); ++i)
+        {
+            const auto &h = heights[i];
             int index = i;
-            while(s.size() && s.top().height >= h) {
-                int prev_index = s.top().index;
-                index = prev_index;
-                int height = s.top().height;
-                ans = max(ans, (i - prev_index) * height);
-                s.pop();
+            while (st.size() && st.top().h >= h)
+            {
+                ans = max(ans, (i - st.top().i) * st.top().h);
+                index = st.top().i;
+                st.pop();
             }
-            s.push(Item(index, h));
+            st.push(Item(h, index));
         }
         return ans;
     }

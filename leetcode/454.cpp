@@ -1,23 +1,24 @@
-class Solution {
+class Solution
+{
 public:
-    int fourSumCount(vector<int>& A, vector<int>& B, vector<int>& C, vector<int>& D) {
-        unordered_map<int, int> AxB;
-        for(int i = 0; i < A.size(); ++i) {
-            for(int j = 0; j < B.size(); ++j) {
-                ++AxB[A[i] + B[j]];
+    int fourSumCount(vector<int> &nums1, vector<int> &nums2, vector<int> &nums3, vector<int> &nums4)
+    {
+        unordered_map<int, int> counter;
+        for (auto num1 : nums1)
+        {
+            for (auto num2 : nums2)
+            {
+                ++counter[-num1 - num2];
             }
         }
-
         int ans = 0;
-        for(int k = 0; k < C.size(); ++k) {
-            for(int l = 0; l < D.size(); ++l) {
-                int target = 0 - (C[k] + D[l]);
-                if(AxB.find(target) != AxB.end())
-                    ans += AxB[target];
+        for (auto num3 : nums3)
+        {
+            for (auto num4 : nums4)
+            {
+                ans += counter[num3 + num4];
             }
         }
         return ans;
     }
 };
-
-// 454. 4Sum II
