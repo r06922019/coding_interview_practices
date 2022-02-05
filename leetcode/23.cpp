@@ -8,26 +8,36 @@
  *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
-class Solution {
+class Solution
+{
 public:
-    ListNode* mergeKLists(vector<ListNode*>& lists) {
-        auto comp = [](const ListNode *a, const ListNode *b) { return a->val > b->val; };
-        priority_queue<ListNode *, vector<ListNode *>, decltype(comp)> pq(comp);
+    ListNode *mergeKLists(vector<ListNode *> &lists)
+    {
+        auto cmp = [](const ListNode *a, const ListNode *b)
+        {
+            return a->val > b->val;
+        };
+        priority_queue<ListNode *, vector<ListNode *>, decltype(cmp)> pq(cmp);
+        for (auto l : lists)
+            if (l)
+                pq.push(l);
+
         ListNode *dummy = new ListNode(0);
-        for(auto &l : lists) {
-            if(l) pq.push(l);
-        }
         ListNode *cur = dummy;
-        while(pq.size()) {
+        while (pq.size())
+        {
             auto top = pq.top();
             pq.pop();
+            auto next = top->next;
+            top->next = nullptr;
             cur->next = top;
             cur = cur->next;
-            top = top->next;
-            if(top) pq.push(top);
+            if (next)
+                pq.push(next);
         }
+
         ListNode *ret = dummy->next;
-        delete dummy;
+        delete (dummy);
         return ret;
     }
 };
