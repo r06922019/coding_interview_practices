@@ -1,16 +1,19 @@
 class Solution {
 public:
     bool checkInclusion(string s1, string s2) {
-        vector<int> s1_counter(26, 0), s2_counter(26, 0);
-        for(auto &c : s1) {
-            ++s1_counter[c-'a'];
+        if(s1.size() > s2.size()) return false;
+        
+        vector<int> counter1(26,0), counter2(26,0);
+        for(int i = 0; i < s1.size(); ++i) {
+            ++counter1[s1[i]-'a'];
+            ++counter2[s2[i]-'a'];
         }
-        for(int i = 0; i < s2.size(); ++i) {
-            if(i >= s1.size())
-                --s2_counter[s2[i-s1.size()]-'a'];
-            ++s2_counter[s2[i]-'a'];
-            if(s1_counter == s2_counter)
-                return true;
+        
+        if(counter1 == counter2) return true;
+        for(int i = s1.size(); i < s2.size(); ++i) {
+            --counter2[s2[i-s1.size()]-'a'];
+            ++counter2[s2[i]-'a'];
+            if(counter1 == counter2) return true;
         }
         return false;
     }
