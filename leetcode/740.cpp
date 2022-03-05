@@ -1,18 +1,20 @@
-class Solution {
+class Solution
+{
 public:
-    int deleteAndEarn(vector<int>& nums) {
-        vector<int> count(1e4+1, 0);
-        int max_num = 0;
-        for(auto &num : nums) {
-            count[num] += num;
-            max_num = max(max_num, num);
+    int deleteAndEarn(vector<int> &nums)
+    {
+        vector<int> counter(1e4 + 1, 0);
+        for (auto num : nums)
+        {
+            ++counter[num];
         }
-
-        vector<int> dp(max_num+1, 0);
-        dp[1] = count[1];
-        for(int i = 2; i <= max_num; ++i) {
-            dp[i] = max(dp[i-2] + count[i], dp[i-1]);
+        int ans = 0;
+        vector<int> dp(1e4 + 1, 0);
+        dp[1] = counter[1];
+        for (int i = 2; i < dp.size(); ++i)
+        {
+            dp[i] = max(dp[i - 1], dp[i - 2] + counter[i] * i);
         }
-        return dp[max_num];
+        return dp.back();
     }
 };
