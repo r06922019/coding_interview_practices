@@ -15,45 +15,49 @@ public:
 */
 
 // iterative, constant space
-class Solution {
+class Solution
+{
 public:
-    Node* copyRandomList(Node* head) {
-        Node *cur = head;
-        while(cur) {
-            Node *next = cur->next;
-            cur->next = new Node(cur->val);
-            cur->next->next = next;
+    Node *copyRandomList(Node *head)
+    {
+        for (Node *cur = head; cur;)
+        {
+            Node *dup = new Node(cur->val), *next = cur->next;
+            cur->next = dup;
+            dup->next = next;
             cur = next;
         }
 
-        cur = head;
-        while(cur) {
-            if(cur->random)
+        for (Node *cur = head; cur; cur = cur->next->next)
+            if (cur->random)
                 cur->next->random = cur->random->next;
-            cur = cur->next->next;
+
+        Node *dummy = new Node(0);
+        for (Node *cur = head, *d_head = dummy; cur; cur = cur->next)
+        {
+            Node *next = cur->next, *next_next = next->next;
+
+            next->next = nullptr;
+            d_head->next = next;
+            d_head = next;
+            cur->next = next_next;
         }
 
-        Node *dummy = new Node(-1);
-        Node *new_cur = dummy;
-        cur = head;
-        while(cur) {
-            new_cur->next = cur->next;
-            cur->next = cur->next->next;
-            cur = cur->next;
-            new_cur = new_cur->next;
-        }
-        Node *new_head = dummy->next;
+        Node *ret = dummy->next;
         delete dummy;
-        return new_head;
+        return ret;
     }
 };
 
-class Solution {
+class Solution
+{
 public:
     unordered_map<Node *, Node *> node_mapping;
-    Node* copyRandomList(Node* head) {
-        if(head == nullptr) return nullptr;
-        if(node_mapping.find(head) != node_mapping.end())
+    Node *copyRandomList(Node *head)
+    {
+        if (head == nullptr)
+            return nullptr;
+        if (node_mapping.find(head) != node_mapping.end())
             return node_mapping[head];
 
         Node *new_node = new Node(head->val);

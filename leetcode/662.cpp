@@ -9,44 +9,82 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-class Solution {
+class Solution
+{
+#define PP pair<TreeNode *, int>
 public:
-
-    bool skewed(TreeNode *root) {
+    bool skewed(TreeNode *root)
+    {
         return (root->left != nullptr && root->right == nullptr) ||
-            (root->left == nullptr && root->right != nullptr);
+               (root->left == nullptr && root->right != nullptr);
     }
 
-    int widthOfBinaryTree(TreeNode* root) {
-        if(root == nullptr) return 0;
+    int widthOfBinaryTree(TreeNode *root)
+    {
+        if (root == nullptr)
+            return 0;
 
         // pruning on root
-        while(skewed(root)) {
-            if(root->left) root = root->left;
-            else root = root->right;
+        while (skewed(root))
+        {
+            if (root->left)
+                root = root->left;
+            else
+                root = root->right;
         }
 
-        queue<pair<TreeNode*, int>> q;
+        queue<PP> q;
         q.push({root, 1});
-        int ans = 0;
+        int ans = 1;
 
-        while(q.size()) {
-            int q_n = q.size(), max_val = INT_MIN, min_val = INT_MAX;
-            while(q_n--) {
-                pair<TreeNode*, int> cur = q.front();
+        while (q.size())
+        {
+            int q_n = q.size();
+            long long int shift = 0;
+            vector<PP> v;
+            while (q_n--)
+            {
+                PP cur = q.front();
                 q.pop();
-                TreeNode* &node = cur.first;
-                int &pos = cur.second;
+                TreeNode *&node = cur.first;
+                long long int pos = cur.second;
 
-                if(node->left) q.push({node->left, 2*pos});
-                if(node->right) q.push({node->right, 2*pos+1});
-
-                max_val = max(max_val, pos);
-                min_val = min(min_val, pos);
+                if (node->left)
+                {
+                    if (v.size())
+                    {
+                        v.push_back({node->left, 2 * pos - shift});
+                    }
+                    else
+                    {
+                        shift = 2 * pos - 1;
+                        v.push_back({node->left, 1});
+                    }
+                }
+                if (node->right)
+                {
+                    if (v.size())
+                    {
+                        v.push_back({node->right, 2 * pos + 1 - shift});
+                    }
+                    else
+                    {
+                        shift = 2 * pos;
+                        v.push_back({node->right, 1});
+                    }
+                }
             }
-            ans = max(ans, max_val - min_val + 1);
-        }
 
+            if (v.size())
+            {
+                ans = max(ans, (int)(v.back().second - v.front().second + 1));
+
+                for (auto p : v)
+                {
+                    q.push(p);
+                }
+            }
+        }
         return ans;
     }
 };
