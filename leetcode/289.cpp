@@ -1,52 +1,81 @@
-class Solution {
+class Solution
+{
 public:
-    bool is_valid(vector<vector<int>>& board, int i, int j) {
-        return i >= 0 && i < board.size() && j >= 0 && j < board[i].size();
+    void mark_next_round_dead(vector<vector<int> > &board, int i, int j)
+    {
+        board[i][j] &= ~(0b10);
     }
 
-#define prev_1_now_0 -3
-#define prev_0_now_1 -4
-#define prev_1_now_1 -5
-#define prev_0_now_0 -6
-    void gameOfLife(vector<vector<int>>& board) {
-        int m = board.size(), n = board[0].size();
-        for(int i = 0; i < m; ++i) {
-            for(int j = 0; j < n; ++j) {
-                int alive = 0;
-                for(int di = -1; di <= 1; ++di) {
-                    for(int dj = -1; dj <= 1; ++dj) {
-                        if(di == 0 && dj == 0) continue;
-                        if(is_valid(board, i+di, j+dj)) {
-                            auto &x = board[i+di][j+dj];
-                            if(x == 1 || x == prev_1_now_1 || x == prev_1_now_0) {
-                                ++alive;
-                            }
-                        }
+    void mark_next_round_alive(vector<vector<int> > &board, int i, int j)
+    {
+        board[i][j] |= 0b10;
+    }
+
+    void proceed_to_next_round(vector<vector<int> > &board, int i, int j)
+    {
+        board[i][j] >>= 1;
+    }
+
+    bool is_currently_alive(vector<vector<int> > &board, int i, int j)
+    {
+        return board[i][j] & 1;
+    }
+
+    int count_living_neighbors(vector<vector<int> > &board, int i, int j, int m, int n)
+    {
+        int living_neighbors = 0;
+        for (int di = -1; di <= 1; ++di)
+        {
+            for (int dj = -1; dj <= 1; ++dj)
+            {
+                if (di == 0 && dj == 0)
+                    continue;
+                int ni = i + di, nj = j + dj;
+                if (ni >= 0 && ni < m && nj >= 0 && nj < n)
+                {
+                    if (is_currently_alive(board, ni, nj))
+                    {
+                        ++living_neighbors;
                     }
-                }
-                if(board[i][j] == 0) {
-                    if(alive == 3)
-                        board[i][j] = prev_0_now_1;
-                    else
-                        board[i][j] = prev_0_now_0;
-                }
-                else {
-                    // 1,3
-                    if(alive < 2 || alive > 3)
-                        board[i][j] = prev_1_now_0;
-                    else
-                        board[i][j] = prev_1_now_1;
                 }
             }
         }
-        for(int i = 0; i < m; ++i) {
-            for(int j = 0; j < n; ++j) {
-                if(board[i][j] == prev_1_now_0 || board[i][j] == prev_0_now_0) {
-                    board[i][j] = 0;
+        return living_neighbors;
+    }
+
+    void gameOfLife(vector<vector<int> > &board)
+    {
+        int m = board.size(), n = board[0].size();
+        for (int i = 0; i < m; ++i)
+        {
+            for (int j = 0; j < n; ++j)
+            {
+                int living_neighbors = count_living_neighbors(board, i, j, m, n);
+                if (is_currently_alive(board, i, j))
+                {
+                    if (living_neighbors == 2 || living_neighbors == 3)
+                    {
+                        mark_next_round_alive(board, i, j);
+                    }
+                    else
+                    {
+                        mark_next_round_dead(board, i, j);
+                    }
                 }
-                else {
-                    board[i][j] = 1;
+                else // dead
+                {
+                    if (living_neighbors == 3)
+                    {
+                        mark_next_round_alive(board, i, j);
+                    }
                 }
+            }
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            for (int j = 0; j < n; ++j)
+            {
+                proceed_to_next_round(board, i, j);
             }
         }
     }

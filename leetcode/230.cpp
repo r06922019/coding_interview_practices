@@ -9,21 +9,24 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-class Solution {
+class Solution
+{
 public:
-
-    void inorder(TreeNode *root, int k, int &cur, TreeNode* &ans) {
-        if(root == nullptr) return;
-        if(ans == nullptr)
+    void inorder(TreeNode *root, int k, int &cur, TreeNode *&ans)
+    {
+        if (root == nullptr)
+            return;
+        if (ans == nullptr)
             inorder(root->left, k, cur, ans);
-        if(cur == k)
+        if (cur == k)
             ans = root;
         ++cur;
-        if(ans == nullptr)
+        if (ans == nullptr)
             inorder(root->right, k, cur, ans);
     }
 
-    int kthSmallest(TreeNode* root, int k) {
+    int kthSmallest(TreeNode *root, int k)
+    {
         int cur = 1;
         TreeNode *ans = nullptr;
         inorder(root, k, cur, ans);

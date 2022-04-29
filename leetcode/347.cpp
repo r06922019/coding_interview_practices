@@ -24,6 +24,21 @@ public:
     }
 };
 
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int, int> counter;
+        for(auto num : nums) ++counter[num];
+        vector<int> unique_nums;
+        for(auto p : counter) unique_nums.push_back(p.first);
+        sort(unique_nums.begin(), unique_nums.end(), [&counter](const int &a, const int &b) {
+            return counter[a] > counter[b];
+        });
+        vector<int> ans(unique_nums.begin(), unique_nums.begin()+k);
+        return ans;
+    }
+};
+
 /*
 
 class Item {
