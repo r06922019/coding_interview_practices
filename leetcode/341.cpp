@@ -16,37 +16,43 @@
  * };
  */
 
-class NestedIterator {
+class NestedIterator
+{
 public:
-    stack<NestedInteger> st_ni;
-    NestedIterator(vector<NestedInteger> nestedList) {
-        reverse(nestedList.begin(), nestedList.end());
-        for(auto &ni : nestedList)
-            st_ni.push(ni);
-        trim();
+    stack<NestedInteger> st;
+
+    NestedIterator(vector<NestedInteger> l)
+    {
+        reverse(l.begin(), l.end());
+        for (auto i : l)
+            st.push(i);
     }
 
-    void trim() {
-        while(st_ni.size() && !st_ni.top().isInteger()) {
-            vector<NestedInteger> nestedList = st_ni.top().getList();
-            st_ni.pop();
-            if(nestedList.size()) {
-                reverse(nestedList.begin(), nestedList.end());
-                for(auto &ni : nestedList)
-                    st_ni.push(ni);
-            }
+    void peek()
+    {
+        while (st.size() && !st.top().isInteger())
+        {
+            auto top = st.top();
+            st.pop();
+            auto l = top.getList();
+            reverse(l.begin(), l.end());
+            for (auto i : l)
+                st.push(i);
         }
     }
 
-    int next() {
-        int val = st_ni.top().getInteger();
-        st_ni.pop();
-        trim();
-        return val;
+    int next()
+    {
+        peek();
+        auto top = st.top();
+        st.pop();
+        return top.getInteger();
     }
 
-    bool hasNext() {
-        return st_ni.size();
+    bool hasNext()
+    {
+        peek();
+        return st.size();
     }
 };
 

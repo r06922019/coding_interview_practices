@@ -1,24 +1,34 @@
-class Solution {
+class Solution
+{
 public:
-    void helper(int cur, int k, int target, vector<int> &buf, vector<vector<int>> &ans) {
-        if(target <= 0 || k == 0) {
-            if(k == 0 && target == 0) {
+    void solve(vector<int> &buf, vector<vector<int> > &ans, int k, int n)
+    {
+        if (k == 0)
+        {
+            if (n == 0)
+            {
                 ans.push_back(buf);
             }
-            return ;
+            return;
         }
 
-        for(int i = cur; i <= 9; ++i) {
+        int start = 1;
+        if (buf.size())
+            start = max(start, buf.back() + 1);
+        int end = min(9, n);
+        for (int i = start; i <= end; ++i)
+        {
             buf.push_back(i);
-            helper(i+1, k-1, target-i, buf, ans);
+            solve(buf, ans, k - 1, n - i);
             buf.pop_back();
         }
     }
 
-    vector<vector<int>> combinationSum3(int k, int target) {
+    vector<vector<int> > combinationSum3(int k, int n)
+    {
+        vector<vector<int> > ans;
         vector<int> buf;
-        vector<vector<int>> ans;
-        helper(1, k, target, buf, ans);
+        solve(buf, ans, k, n);
         return ans;
     }
 };
