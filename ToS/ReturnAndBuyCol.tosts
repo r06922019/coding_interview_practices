@@ -1,0 +1,20 @@
+# https://intercom.help/simpler-trading/en/articles/3284541-watchlist-how-to-create-a-custom-watchlist-column-in-tos
+input price = close;
+input shortLength = 5;
+input midLength = 20;
+input longLength = 60;
+input displace = 0;
+input showBreakoutSignals = yes;
+
+# colors https://tlc.thinkorswim.com/center/reference/thinkScript/Functions/Look---Feel/GetColor
+def AvgExpShort = Average(price[-displace], shortLength);
+def AvgExpMid = ExpAverage(price[-displace], midLength);
+def AvgExpLong = ExpAverage(price[-displace], longLength);
+def avgsRising = AvgExpShort > AvgExpShort[1] and AvgExpMid > AvgExpMid[1] and AvgExpLong > AvgExpLong[1];
+def avgsInOrder = price > AvgExpShort and AvgExpShort > AvgExpMid and AvgExpMid > AvgExpLong;
+
+def UpSignal = (price crosses above AvgExpShort) and avgsRising and avgsInOrder;
+
+AddLabel(yes, if UpSignal then "Buy " else " ",Color.PLUM);
+AssignBackgroundColor(if UpSignal then color.YELLOW else color.white);
+
