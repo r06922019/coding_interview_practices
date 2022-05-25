@@ -6,3 +6,4 @@ Resources:
 3. top like https://leetcode.com/problemset/all/?listId=79h8rn6 
 4. top interview https://leetcode.com/problemset/all/?listId=wpwgkgt 
 5. https://www.hackerrank.com/interview/interview-preparation-kit
+6. https://medium.com/@alexcancode/31724508ce0e
