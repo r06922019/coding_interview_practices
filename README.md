@@ -7,3 +7,4 @@ Resources:
 4. top interview https://leetcode.com/problemset/all/?listId=wpwgkgt 
 5. https://www.hackerrank.com/interview/interview-preparation-kit
 6. https://medium.com/@alexcancode/31724508ce0e
+7. Blind 75 https://leetcode.com/discuss/general-discussion/460599/blind-75-leetcode-questions
