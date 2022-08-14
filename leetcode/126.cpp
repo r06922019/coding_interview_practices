@@ -1,40 +1,56 @@
 class Solution
 {
 public:
+    void backtrack(vector<int> &cur_path, vector<vector<int> > &ret, unordered_map<int, vector<int> > &adj_list, int cur)
+    {
+        if (adj_list[cur].size() == 0)
+        {
+            ret.push_back(cur_path);
+            return;
+        }
+        for (auto next : adj_list[cur])
+        {
+            cur_path.push_back(next);
+            backtrack(cur_path, ret, adj_list, next);
+            cur_path.pop_back();
+        }
+    }
+
     vector<vector<int> > bfs(const int n, const int start, const int target, unordered_map<int, vector<int> > &adj_list)
     {
-        vector<vector<int> > ret;
         int steps = 0;
-        queue<pair<int, vector<int> > > q;
+        queue<int> q;
         bool not_found = true;
         vector<int> visited(n, -1);
+        unordered_map<int, vector<int> > node_to_parent;
 
-        q.push({start, {start}});
+        q.push(start);
+        node_to_parent[start] = {};
         visited[start] = steps + 1;
         while (q.size() && not_found)
         {
             int q_size = q.size();
             while (q_size--)
             {
-                pair<int, vector<int> > cur_pair = q.front();
-                int cur = cur_pair.first;
-                vector<int> path = cur_pair.second;
+                int cur = q.front();
                 q.pop();
                 if (cur == target)
                 {
                     not_found = false;
-                    ret.push_back(path);
                 }
                 else
                 {
                     for (auto neighbor : adj_list[cur])
                     {
-                        if (visited[neighbor] == -1 || visited[neighbor] == steps + 1)
+                        if (visited[neighbor] == -1)
                         {
-                            path.push_back(neighbor);
-                            q.push({neighbor, path});
-                            path.pop_back();
+                            q.push(neighbor);
+                            node_to_parent[neighbor].push_back(cur);
                             visited[neighbor] = steps + 1;
+                        }
+                        else if (visited[neighbor] == steps + 1)
+                        {
+                            node_to_parent[neighbor].push_back(cur);
                         }
                     }
                 }
@@ -42,53 +58,63 @@ public:
             ++steps;
         }
 
+        vector<vector<int> > ret;
+        if (!not_found)
+        {
+            vector<int> cur_path = {target};
+            backtrack(cur_path, ret, node_to_parent, target);
+        }
         return ret;
+    }
+
+    unordered_map<string, int> make_w2i(const string &begin_word, const string &end_word, vector<string> &word_list)
+    {
+        int n = word_list.size();
+        unordered_map<string, int> w2i;
+        for (int i = 0; i < n; ++i)
+        {
+            w2i[word_list[i]] = i;
+        }
+
+        if (w2i.find(begin_word) == w2i.end())
+        {
+            w2i[begin_word] = n;
+            word_list.push_back(begin_word);
+            n = word_list.size();
+        }
+        return w2i;
     }
 
     vector<vector<string> > findLadders(string begin_word, string end_word, vector<string> &word_list)
     {
-        int n = word_list.size();
-        unordered_map<string, int> word_set;
-        for (int i = 0; i < n; ++i)
-        {
-            word_set[word_list[i]] = i;
-        }
-
-        if (word_set.find(begin_word) == word_set.end())
-        {
-            word_set[begin_word] = n;
-            word_list.push_back(begin_word);
-            n = word_list.size();
-        }
-
-        if (word_set.find(end_word) == word_set.end())
+        auto w2i = make_w2i(begin_word, end_word, word_list);
+        if (w2i.find(end_word) == w2i.end())
             return {};
 
         unordered_map<int, vector<int> > adj_list;
-        for (int i = 0; i < n; ++i)
+        for (auto p : w2i)
         {
-            auto word = word_list[i];
-            for (int j = 0; j < word.size(); ++j)
+            auto word = p.first;
+            const auto &index = p.second;
+            for (int i = 0; i < word.size(); ++i)
             {
-                char original_char = word[j];
+                const auto original_char = word[i];
                 for (char c = 'a'; c <= 'z'; ++c)
                 {
                     if (c == original_char)
                         continue;
-                    word[j] = c;
-                    auto it = word_set.find(word);
-                    if (it != word_set.end())
+                    word[i] = c;
+                    auto it = w2i.find(word);
+                    if (it != w2i.end())
                     {
-                        adj_list[i].push_back(it->second);
+                        adj_list[index].push_back(w2i[word]);
                     }
                 }
-                word[j] = original_char;
+                word[i] = original_char;
             }
         }
 
-        vector<vector<int> > result = bfs(n, word_set[begin_word], word_set[end_word], adj_list);
-        if (result.size() == 0)
-            return {};
+        vector<vector<int> > result = bfs(w2i.size(), w2i[begin_word], w2i[end_word], adj_list);
         vector<vector<string> > ans;
         for (auto indexs : result)
         {
@@ -97,7 +123,7 @@ public:
             {
                 vec.push_back(word_list[index]);
             }
-            ans.push_back(vec);
+            ans.push_back(vector<string>(vec.rbegin(), vec.rend()));
         }
         return ans;
     }
