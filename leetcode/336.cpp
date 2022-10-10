@@ -2,8 +2,9 @@ class TrieNode {
 public:
     int index = -1;
     vector<int> indexs; // rest of the string is a palin
-    unordered_map<char, TrieNode*> children;
-    TrieNode(){}
+    //unordered_map<char, TrieNode*> children;
+ vector<TrieNode*> children;
+    TrieNode():children(26,nullptr){}
 };
 
 class Trie {
@@ -29,10 +30,10 @@ public:
             if(is_palin(word, i, n-1)) {
                 cur->indexs.push_back(index);
             }
-            if(cur->children.find(c) == cur->children.end()) {
-                cur->children[c] = new TrieNode();
+            if(cur->children[c-'a']== nullptr) {
+                cur->children[c-'a'] = new TrieNode();
             }
-            cur = cur->children[c];
+            cur = cur->children[c-'a'];
         }
         cur->index = index;
         cur->indexs.push_back(index);
@@ -47,10 +48,10 @@ public:
                     ans.push_back({word_index, cur->index});
             }
             auto &c = word[char_index];
-            if(cur->children.find(c) == cur->children.end()) {
+            if(cur->children[c-'a'] == nullptr) {
                 return;
             }
-            cur = cur->children[c];
+            cur = cur->children[c-'a'];
         }
         for(auto &i : cur->indexs) {
             if(word_index != i)

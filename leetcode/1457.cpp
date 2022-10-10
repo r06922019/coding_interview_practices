@@ -1,3 +1,67 @@
+/*
+// backtrack 
+
+class Solution {
+public:
+    void helper(TreeNode* root, int &visited, int &ans) {
+        if(root == nullptr) return;
+        visited ^= 1 << root->val;
+        if(root->left == nullptr && root->right == nullptr && (visited == 0 || (visited & (visited-1)) == 0)) ++ans;
+        helper(root->left, visited, ans);
+        helper(root->right, visited, ans);
+        visited ^= 1 << root->val;
+    }
+    
+    int pseudoPalindromicPaths (TreeNode* root) {
+        int ans = 0, visited = 0;
+        helper(root, visited, ans);
+        return ans;
+    }
+};
+*/
+/*
+
+class ToggleSet {
+public:
+    unordered_set<int> s;
+    
+    bool toggle(const int x) {
+        if(s.find(x) != s.end()) {
+            s.erase(x);
+            return false;
+        }
+            s.insert(x);
+        return true;
+    }
+    
+    size_t size() {
+        return s.size();
+    }
+    
+};
+
+class Solution {
+public:
+    void helper(TreeNode* root, ToggleSet &visited, int &ans) {
+        if(root == nullptr) return;
+            visited.toggle(root->val);
+        if(root->left == nullptr && root->right == nullptr && visited.size() <= 1) ++ans;
+        helper(root->left, visited, ans);
+        helper(root->right, visited, ans);
+                    visited.toggle(root->val);
+
+    }
+    
+    int pseudoPalindromicPaths (TreeNode* root) {
+        int ans = 0;
+        ToggleSet visited;
+        helper(root, visited, ans);
+        return ans;
+    }
+};
+
+*/
+
 /**
  * Definition for a binary tree node.
  * struct TreeNode {

@@ -10,18 +10,25 @@
  * };
  */
 
-class Solution {
+class Solution
+{
 public:
-    void traverseTree(TreeNode* root, int target,
-                      unordered_set<int> &values, bool &result) {
-        if(root == nullptr || result) return;
-        if(root->left) traverseTree(root->left, target, values, result);
-        if(values.find(target - root->val) != values.end()) result = true;
+    void traverseTree(TreeNode *root, int target,
+                      unordered_set<int> &values, bool &result)
+    {
+        if (root == nullptr || result)
+            return;
+        if (root->left)
+            traverseTree(root->left, target, values, result);
+        if (values.find(target - root->val) != values.end())
+            result = true;
         values.insert(root->val);
-        if(root->right) traverseTree(root->right, target, values, result);
+        if (root->right)
+            traverseTree(root->right, target, values, result);
     }
 
-    bool findTarget(TreeNode* root, int k) {
+    bool findTarget(TreeNode *root, int k)
+    {
         unordered_set<int> values;
         bool result = false;
         traverseTree(root, k, values, result);
@@ -29,30 +36,39 @@ public:
     }
 };
 
-class Solution {
+class Solution
+{
 public:
-
-    void flattenTree(TreeNode* root, vector<int> &values) {
-        if(root == nullptr) return;
-        if(root->left) flattenTree(root->left, values);
+    void flattenTree(TreeNode *root, vector<int> &values)
+    {
+        if (root == nullptr)
+            return;
+        if (root->left)
+            flattenTree(root->left, values);
         values.push_back(root->val);
-        if(root->right) flattenTree(root->right, values);
+        if (root->right)
+            flattenTree(root->right, values);
     }
 
-    bool findTarget(TreeNode* root, int k) {
+    bool findTarget(TreeNode *root, int k)
+    {
         vector<int> values;
         flattenTree(root, values);
 
-        int l = 0, r = values.size()-1;
-        while(l < r) {
+        int l = 0, r = values.size() - 1;
+        while (l < r)
+        {
             int cur_sum = values[l] + values[r];
-            if(cur_sum > k) {
+            if (cur_sum > k)
+            {
                 --r;
             }
-            else if(cur_sum < k) {
+            else if (cur_sum < k)
+            {
                 ++l;
             }
-            else {
+            else
+            {
                 return true;
             }
         }
