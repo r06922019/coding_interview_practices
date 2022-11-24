@@ -1,13 +1,19 @@
 class Solution {
 public:
-    int numSquares(int n) {
-        vector<int> dp(n+1, INT_MAX);
+    void init(vector<int> &dp) {
+        assert(dp.size() == (1e4+1));
+        if(dp[0] == 0) return ;
         dp[0] = 0;
-        for(int i = 1; i <= n; ++i) {
+        for(int i = 1; i <= 1e4; ++i) {
             for(int j = 1; j*j <= i; ++j) {
-                dp[i] = min(dp[i], 1+dp[i-j*j]);
+                dp[i] = min(dp[i], dp[i-j*j] + 1);
             }
         }
+    }
+
+    int numSquares(int n) {
+        static vector<int> dp(1e4+1, INT_MAX);
+        init(dp);
         return dp[n];
     }
 };

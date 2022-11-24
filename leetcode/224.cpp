@@ -50,10 +50,12 @@ public:
             else {
                 if(num.size()) {
                     nums.push(stoi(num));
+                    printf("pushed %s\n", num);
                     num = "";
                 }
                 if(c == '(') {
                     ops.push(c); // (
+                    printf("pushed (\n");
                 }
                 else if(c == ')') {
                     while(ops.top() != '(') {
@@ -66,6 +68,9 @@ public:
                         do_ops(nums, ops);
                     }
                     ops.push(c);
+                }
+                else {
+                    continue;
                 }
             }
         }
