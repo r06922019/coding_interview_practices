@@ -23,7 +23,7 @@ public:
     void fill_in(vector<vector<int>> &prefix, string s, bool rrr)
     {
         vector<int> counts(10, 0);
-        int n = s.size();
+        const int n = s.size();
         for (int i = 0; i < n - 1; ++i)
         {
             int digit = s[i] - '0';
@@ -45,13 +45,12 @@ public:
     }
     int countPalindromes(string s)
     {
-        if (s.size() < 5)
-            return 0;
-        vector<vector<int>> prefix(s.size(), vector<int>(100, 0)), suffix(s.size(), vector<int>(100, 0));
+        const int n = s.size();
+        vector<vector<int>> prefix(n, vector<int>(100, 0)), suffix(n, vector<int>(100, 0));
         fill_in(prefix, s, false);
         fill_in(suffix, string(s.rbegin(), s.rend()), true);
         int ans = 0;
-        for (int i = 2; i < s.size() - 2; ++i)
+        for (int i = 2; i < n - 2; ++i)
         {
             for (int a = 0; a <= 9; ++a)
             {
