@@ -1,6 +1,7 @@
 class Solution:
     def convert(self, s: str, numRows: int) -> str:
-        if numRows == 1: return s
+        if numRows == 1:
+            return s
         rows = [""] * numRows
         index, d = 0, 1
         for c in s:

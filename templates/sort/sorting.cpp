@@ -5,56 +5,79 @@
 
 using namespace std;
 
-void quick_sort(vector<int> &nums, int start, int end) {
-    if(end - start <= 1) return ;
-    int pivot_index = start + rand() % (end-start);
-    swap(nums[end-1], nums[pivot_index]);
-    int pivot = nums[end-1];
-    int j = start;
-    for(int i = start; i < end; ++i) {
-        if(nums[i] < pivot) {
-            swap(nums[i], nums[j]);
-            ++j;
+void quick_sort(vector<int> &nums, int l, int r)
+{
+    if (l >= r)
+        return;
+
+    // printf("l = %d, r = %d\n", l,r);
+    // for(int i = l; i <= r; ++i) {
+    //     printf("%d ", nums[i]);
+    // }
+    // puts("");
+
+    int k = l + rand() % (r - l);
+    const int pivot = nums[k];
+    // printf("pivot = %d\n", pivot);
+    swap(nums[k], nums[r]);
+
+    int i = l;
+    for (int j = l; j < r; ++j)
+    {
+        if (nums[j] <= pivot)
+        {
+            // printf("swapping nums[%d] %d, nums[%d], %d\n", i, nums[i], j, nums[j]);
+            swap(nums[i++], nums[j]);
         }
     }
-    swap(nums[end-1], nums[j]);
-    quick_sort(nums, start, j);
-    quick_sort(nums, j+1, end);
+
+    swap(nums[i], nums[r]);
+    // printf("i = %d\n", i);
+    quick_sort(nums, l, i - 1);
+    quick_sort(nums, i + 1, r);
 }
 
-void merge_sort(vector<int> &nums, int start, int end) {
-    if(end - start <= 1) return ;
+void merge_sort(vector<int> &nums, int start, int end)
+{
+    if (end - start <= 1)
+        return;
 
-    int mid = start + ((end-start) >> 1);
+    int mid = start + ((end - start) >> 1);
     merge_sort(nums, start, mid);
     merge_sort(nums, mid, end);
 
     vector<int> tmp;
     int l = start, r = mid;
-    while(l < mid || r < end) {
-        if(r >= end || (l < mid && nums[l] < nums[r])) {
+    while (l < mid || r < end)
+    {
+        if (r >= end || (l < mid && nums[l] < nums[r]))
+        {
             tmp.push_back(nums[l]);
             ++l;
         }
-        else {
+        else
+        {
             tmp.push_back(nums[r]);
             ++r;
         }
     }
 
-    for (int i = start; i < end; ++i) {
-        nums[i] = tmp[i-start];
+    for (int i = start; i < end; ++i)
+    {
+        nums[i] = tmp[i - start];
     }
     return;
 }
 
-int main(void) {
+int main(void)
+{
     vector<int> nums;
     int N = 1e3, rand_range = 1e5;
 
     // generate
     nums.reserve(N);
-    for(int i = 0; i < N; ++i) {
+    for (int i = 0; i < N; ++i)
+    {
         nums.push_back(rand() % rand_range);
     }
 
@@ -64,8 +87,10 @@ int main(void) {
 
     sort(nums1.begin(), nums1.end());
 
-    for(int i = 0; i < N; ++i) {
-        if(nums[i] != nums1[i]) {
+    for (int i = 0; i < N; ++i)
+    {
+        if (nums[i] != nums1[i])
+        {
             puts("failed");
             return 1;
         }
@@ -73,8 +98,3 @@ int main(void) {
 
     return 0;
 }
-
-
-
-
-

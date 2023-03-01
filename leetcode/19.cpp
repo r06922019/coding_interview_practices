@@ -8,20 +8,23 @@
  *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
-class Solution {
+class Solution
+{
 public:
-    ListNode* removeNthFromEnd(ListNode* head, int n) {
+    ListNode *removeNthFromEnd(ListNode *head, int n)
+    {
         ListNode *dummy = new ListNode(0, head);
         ListNode *slow = dummy, *fast = dummy;
-        for(int i = 0; i < n; ++i)
+        for (int i = 0; i < n; ++i)
             fast = fast->next;
-        while(fast->next) {
+        while (fast->next)
+        {
             fast = fast->next;
             slow = slow->next;
         }
         ListNode *to_remove = slow->next;
         slow->next = to_remove->next;
-        delete(to_remove);
+        delete (to_remove);
         return dummy->next;
     }
 };
