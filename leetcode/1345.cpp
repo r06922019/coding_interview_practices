@@ -3,7 +3,7 @@ class Solution
 public:
     int minJumps(vector<int> &arr)
     {
-        unordered_map<int, vector<int> > val_to_index;
+        unordered_map<int, vector<int>> val_to_index;
         int n = arr.size();
         for (int i = 0; i < n; ++i)
             val_to_index[arr[i]].push_back(i);
@@ -22,6 +22,8 @@ public:
                 if (cur == arr.size() - 1)
                     return steps;
                 auto cands = val_to_index[arr[cur]];
+
+                // most important line
                 val_to_index.erase(arr[cur]);
                 for (auto x : {cur - 1, cur + 1})
                     if (x >= 0 && x < arr.size() && !visited[x])
