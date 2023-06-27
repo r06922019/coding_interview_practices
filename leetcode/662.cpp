@@ -13,25 +13,10 @@ class Solution
 {
 #define PP pair<TreeNode *, int>
 public:
-    bool skewed(TreeNode *root)
-    {
-        return (root->left != nullptr && root->right == nullptr) ||
-               (root->left == nullptr && root->right != nullptr);
-    }
-
     int widthOfBinaryTree(TreeNode *root)
     {
         if (root == nullptr)
             return 0;
-
-        // pruning on root
-        while (skewed(root))
-        {
-            if (root->left)
-                root = root->left;
-            else
-                root = root->right;
-        }
 
         queue<PP> q;
         q.push({root, 1});
@@ -51,34 +36,21 @@ public:
 
                 if (node->left)
                 {
-                    if (v.size())
-                    {
-                        v.push_back({node->left, 2 * pos - shift});
-                    }
-                    else
-                    {
+                    if (v.empty())
                         shift = 2 * pos - 1;
-                        v.push_back({node->left, 1});
-                    }
+                    v.push_back({node->left, 2 * pos - shift});
                 }
                 if (node->right)
                 {
-                    if (v.size())
-                    {
-                        v.push_back({node->right, 2 * pos + 1 - shift});
-                    }
-                    else
-                    {
+                    if (v.empty())
                         shift = 2 * pos;
-                        v.push_back({node->right, 1});
-                    }
+                    v.push_back({node->right, 2 * pos + 1 - shift});
                 }
             }
 
             if (v.size())
             {
                 ans = max(ans, (int)(v.back().second - v.front().second + 1));
-
                 for (auto p : v)
                 {
                     q.push(p);

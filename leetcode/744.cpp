@@ -1,19 +1,21 @@
-class Solution {
+class Solution
+{
 public:
-    char nextGreatestLetter(vector<char>& letters, char target) {
-        if(target == 'z')
-            target = 'a';
-        else
-            ++target;
-        if(letters.back() < target) return letters.front();
-        int l = 0, r = letters.size()-1;
-        while(l < r) {
-            int mid = l + (r-l)/2;
-            if(target <= letters[mid]) {
-                r = mid;
+    char nextGreatestLetter(vector<char> &letters, char target)
+    {
+        if (letters.back() <= target)
+            return letters.front();
+        int l = 0, r = letters.size() - 1;
+        while (l < r)
+        {
+            const int mid = l + (r - l) / 2;
+            if (letters[mid] <= target)
+            {
+                l = mid + 1;
             }
-            else {
-                l = mid+1;
+            else
+            {
+                r = mid;
             }
         }
         return letters[l];

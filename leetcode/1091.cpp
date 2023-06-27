@@ -1,7 +1,7 @@
 class Solution
 {
 public:
-    int bfs_shortest_length(unordered_map<int, vector<int> > &adj_lists, int start, int target)
+    int bfs_shortest_length(unordered_map<int, vector<int>> &adj_lists, int start, int target)
     {
         queue<int> q;
         unordered_set<int> visited;
@@ -32,21 +32,23 @@ public:
         return -1;
     }
 
-    bool is_valid(vector<vector<int> > &grid, int i, int j)
+    bool is_valid(vector<vector<int>> &grid, int i, int j)
     {
         return i >= 0 && i < grid.size() && j >= 0 && j < grid[i].size();
     }
 
-    int coord_2d_to_1d(vector<vector<int> > &grid, int i, int j)
+    int coord_2d_to_1d(vector<vector<int>> &grid, int i, int j)
     {
         return i * grid[0].size() + j;
     }
 
-    int shortestPathBinaryMatrix(vector<vector<int> > &grid)
+    int shortestPathBinaryMatrix(vector<vector<int>> &grid)
     {
         int m = grid.size(), n = grid[0].size();
-        unordered_map<int, vector<int> > adj_lists;
-        vector<vector<int> > dirs = {
+        if (grid[m - 1][n - 1] == 1)
+            return -1;
+        unordered_map<int, vector<int>> adj_lists;
+        vector<vector<int>> dirs = {
             {0, 1}, {1, 0}, {1, 1}, {1, -1}};
         for (int i = 0; i < m; ++i)
         {
