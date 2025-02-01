@@ -11,3 +11,4 @@ Resources:
 8. https://leetcode.com/discuss/study-guide/2244368/backtracking-for-beginners-problems
 9. https://leetcode.com/discuss/study-guide/2272161/most-important-topics-for-interviews-cs-core-topics
 10. https://leetcode.com/discuss/study-guide/2347639/a-comprehensive-guide-and-template-for-monotonic-stack-based-problems
+11. https://leetcode.com/problem-list/9yfeu01j/
